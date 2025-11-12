@@ -2,6 +2,11 @@ package com.app.service;
 
 import com.app.dao.GenericDAO;
 import com.app.model.Admin;
+import com.app.utils.JpaUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 public class AdminService {
@@ -47,4 +52,20 @@ public class AdminService {
             throw new ServiceException("Erreur lors de la suppression de l'admin", e);
         }
     }
+    
+    public Admin trouverParEmail(String email) throws ServiceException {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Admin> query = em.createQuery(
+                    "SELECT a FROM Admin a WHERE a.email = :email", Admin.class);
+            query.setParameter("email", email);
+            return query.getResultStream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la recherche d'un admin par email", e);
+        } finally {
+            em.close();
+        }
+    }
+
+    
 }

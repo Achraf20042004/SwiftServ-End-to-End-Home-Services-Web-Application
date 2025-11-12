@@ -2,6 +2,11 @@ package com.app.service;
 
 import com.app.dao.GenericDAO;
 import com.app.model.Client;
+import com.app.utils.JpaUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 public class ClientService {
@@ -45,6 +50,22 @@ public class ClientService {
             dao.delete(id);
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la suppression du client", e);
+        }
+    }
+    
+    public Client trouverParEmail(String email) throws ServiceException {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Client> query = em.createQuery(
+                    "SELECT c FROM Client c WHERE c.email = :email", Client.class);
+            query.setParameter("email", email);
+
+            // retourne le client s’il existe
+            return query.getResultStream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la recherche par email", e);
+        } finally {
+            em.close();
         }
     }
 }

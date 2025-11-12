@@ -47,4 +47,14 @@ public class StatistiqueService {
             throw new ServiceException("Erreur lors de la suppression des statistiques", e);
         }
     }
+
+    // ✅ MÉTHODE MANQUANTE POUR LE SERVLET
+    public Statistique getStatistiques() throws ServiceException {
+        try {
+            List<Statistique> stats = dao.findAll();
+            return stats.isEmpty() ? null : stats.get(0);  // Retourne la première ligne
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du chargement des statistiques", e);
+        }
+    }
 }

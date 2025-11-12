@@ -10,42 +10,80 @@ public abstract class Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, length = 100)
     private String nom;
-
-    @Column(nullable = false, length = 100)
     private String prenom;
-
-    @Column(nullable = false, unique = true, length = 150)
     private String email;
-
-    @Column(nullable = false)
     private String motDePasse;
+    private String telephone;
 
     @Column(length = 20)
-    private String telephone;
+    private String role;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateInscription = new Date();
 
-    // Getters et setters
-    public int getId() { return id; }
+    // --- Getters et Setters ---
+    public int getId() {
+        return id;
+    }
 
-    public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getPrenom() { return prenom; }
-    public void setPrenom(String prenom) { this.prenom = prenom; }
+    public String getNom() {
+        return nom;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-    public String getMotDePasse() { return motDePasse; }
-    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
+    public String getPrenom() {
+        return prenom;
+    }
 
-    public String getTelephone() { return telephone; }
-    public void setTelephone(String telephone) { this.telephone = telephone; }
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 
-    public Date getDateInscription() { return dateInscription; }
-    public void setDateInscription(Date dateInscription) { this.dateInscription = dateInscription; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Date getDateInscription() {
+        return dateInscription;
+    }
+
+    public void setDateInscription(Date dateInscription) {
+        this.dateInscription = dateInscription;
+    }
 }

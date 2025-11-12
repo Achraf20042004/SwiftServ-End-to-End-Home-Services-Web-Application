@@ -2,6 +2,11 @@ package com.app.service;
 
 import com.app.dao.GenericDAO;
 import com.app.model.Prestataire;
+import com.app.utils.JpaUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 public class PrestataireService {
@@ -47,4 +52,20 @@ public class PrestataireService {
             throw new ServiceException("Erreur lors de la suppression du prestataire", e);
         }
     }
+    
+    
+    public Prestataire trouverParEmail(String email) throws ServiceException {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Prestataire> query = em.createQuery(
+                    "SELECT p FROM Prestataire p WHERE p.email = :email", Prestataire.class);
+            query.setParameter("email", email);
+            return query.getResultStream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la recherche d'un prestataire par email", e);
+        } finally {
+            em.close();
+        }
+    }
+
 }
