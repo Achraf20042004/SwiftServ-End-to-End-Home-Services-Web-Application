@@ -3,7 +3,6 @@ package com.app.controller;
 import com.app.model.Statistique;
 import com.app.service.StatistiqueService;
 import com.app.service.ServiceException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,17 +23,14 @@ public class StatistiqueServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // Récupération des statistiques
             Statistique stats = statistiqueService.getStatistiques();
-
             request.setAttribute("stats", stats);
 
-            // Affichage de la page dashboard
-            request.getRequestDispatcher("/WEB-INF/views/statistique/dashboard.jsp")
+            request.getRequestDispatcher("/WEB-INF/views/statistiques/dashboard.jsp")
                    .forward(request, response);
 
         } catch (ServiceException e) {
-            throw new ServletException(e);
+            throw new ServletException("Erreur lors du chargement des statistiques", e);
         }
     }
 }
