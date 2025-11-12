@@ -5,7 +5,7 @@
                                  https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
 
-    <persistence-unit name="services_domicile_unit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="servicesPU" transaction-type="RESOURCE_LOCAL">
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
