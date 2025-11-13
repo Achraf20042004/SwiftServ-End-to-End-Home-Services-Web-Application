@@ -1,209 +1,240 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<c:set var="pageTitle" value="Dashboard Admin" scope="request"/>
-<jsp:include page="../includes/header.jsp"/>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="pageTitle" value="Dashboard Administrateur" scope="request"/>
+<jsp:include page="../shared/header.jsp"/>
 
-<div class="row mb-4 fade-in">
-    <div class="col-12">
-        <div class="page-header">
-            <h1><i class="fas fa-chart-line text-gradient me-2"></i> Tableau de bord administrateur</h1>
-            <p class="text-muted mb-0">
-                <i class="fas fa-calendar me-1"></i> 
-                <script>document.write(new Date().toLocaleDateString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}));</script>
-            </p>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header fade-in">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="fas fa-tachometer-alt text-gradient"></i>
+                    Dashboard Administrateur
+                </h1>
+                <p class="text-muted mb-0">
+                    Bienvenue, ${sessionScope.user.prenom} ${sessionScope.user.nom}
+                </p>
+            </div>
+            <div>
+                <span class="badge bg-success fs-6">
+                    <i class="fas fa-circle pulse"></i> Système opérationnel
+                </span>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Statistics Cards -->
-<div class="row g-4 mb-4 fade-in">
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-icon bg-primary">
-                <i class="fas fa-users"></i>
+    <!-- Statistiques Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card fade-in">
+                <div class="stat-icon bg-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">245</div>
+                <div class="stat-label">Clients Actifs</div>
+                <div class="mt-2">
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> +12% ce mois
+                    </small>
+                </div>
             </div>
-            <div class="stat-value">256</div>
-            <div class="stat-label">Clients actifs</div>
-            <small class="text-success">
-                <i class="fas fa-arrow-up me-1"></i> +12% ce mois
-            </small>
         </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-icon bg-success">
-                <i class="fas fa-user-tie"></i>
-            </div>
-            <div class="stat-value">89</div>
-            <div class="stat-label">Prestataires</div>
-            <small class="text-success">
-                <i class="fas fa-arrow-up me-1"></i> +8% ce mois
-            </small>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-icon bg-warning">
-                <i class="fas fa-calendar-check"></i>
-            </div>
-            <div class="stat-value">1,234</div>
-            <div class="stat-label">Réservations</div>
-            <small class="text-info">
-                <i class="fas fa-clock me-1"></i> 45 en attente
-            </small>
-        </div>
-    </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card">
-            <div class="stat-icon bg-info">
-                <i class="fas fa-euro-sign"></i>
-            </div>
-            <div class="stat-value">45,678€</div>
-            <div class="stat-label">Chiffre d'affaires</div>
-            <small class="text-success">
-                <i class="fas fa-arrow-up me-1"></i> +18% ce mois
-            </small>
-        </div>
-    </div>
-</div>
 
-<!-- Quick Actions -->
-<div class="row mb-4 fade-in">
-    <div class="col-12">
-        <div class="card-modern">
-            <div class="card-header-custom">
-                <i class="fas fa-bolt me-2"></i> Actions rapides
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card fade-in">
+                <div class="stat-icon bg-success">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="stat-value">78</div>
+                <div class="stat-label">Prestataires</div>
+                <div class="mt-2">
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> +5 nouveaux
+                    </small>
+                </div>
             </div>
-            <div class="card-body-custom">
-                <div class="row g-3">
-                    <div class="col-md-3 col-sm-6">
-                        <a href="${pageContext.request.contextPath}/client?action=add" class="btn btn-outline-custom w-100">
-                            <i class="fas fa-user-plus me-2"></i> Nouveau client
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <a href="${pageContext.request.contextPath}/prestataire?action=add" class="btn btn-outline-custom w-100">
-                            <i class="fas fa-user-tie me-2"></i> Nouveau prestataire
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <a href="${pageContext.request.contextPath}/service?action=add" class="btn btn-outline-custom w-100">
-                            <i class="fas fa-briefcase me-2"></i> Nouveau service
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <a href="${pageContext.request.contextPath}/categorie?action=add" class="btn btn-outline-custom w-100">
-                            <i class="fas fa-tags me-2"></i> Nouvelle catégorie
-                        </a>
-                    </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card fade-in">
+                <div class="stat-icon bg-warning">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-value">432</div>
+                <div class="stat-label">Réservations</div>
+                <div class="mt-2">
+                    <small class="text-warning">
+                        <i class="fas fa-clock"></i> 23 en attente
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card fade-in">
+                <div class="stat-icon bg-info">
+                    <i class="fas fa-euro-sign"></i>
+                </div>
+                <div class="stat-value">€15.2K</div>
+                <div class="stat-label">Revenus ce mois</div>
+                <div class="mt-2">
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> +8% vs mois dernier
+                    </small>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Recent Activities & Pending Items -->
-<div class="row g-4 fade-in">
-    <!-- Pending Reservations -->
-    <div class="col-lg-6">
-        <div class="card-modern">
-            <div class="card-header-custom">
-                <i class="fas fa-clock me-2"></i> Réservations en attente
-            </div>
-            <div class="card-body-custom">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Client</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-circle bg-primary me-2">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <span>Marie Dupont</span>
-                                    </div>
-                                </td>
-                                <td>Ménage</td>
-                                <td><small class="text-muted">15/01/2025</small></td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary-custom">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-circle bg-success me-2">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <span>Jean Martin</span>
-                                    </div>
-                                </td>
-                                <td>Jardinage</td>
-                                <td><small class="text-muted">16/01/2025</small></td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary-custom">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <!-- Actions Rapides -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card card-modern fade-in">
+                <div class="card-header-custom">
+                    <i class="fas fa-bolt"></i> Actions Rapides
                 </div>
-                <div class="text-center mt-3">
-                    <a href="${pageContext.request.contextPath}/reservation?action=list" class="btn btn-sm btn-outline-custom">
-                        Voir toutes les réservations <i class="fas fa-arrow-right ms-1"></i>
+                <div class="card-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/client?action=list" 
+                               class="btn btn-outline-primary w-100 py-3">
+                                <i class="fas fa-users fa-2x mb-2 d-block"></i>
+                                Gérer Clients
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/prestataire?action=list" 
+                               class="btn btn-outline-success w-100 py-3">
+                                <i class="fas fa-user-tie fa-2x mb-2 d-block"></i>
+                                Gérer Prestataires
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/service?action=list" 
+                               class="btn btn-outline-info w-100 py-3">
+                                <i class="fas fa-concierge-bell fa-2x mb-2 d-block"></i>
+                                Gérer Services
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/categorie?action=list" 
+                               class="btn btn-outline-warning w-100 py-3">
+                                <i class="fas fa-tags fa-2x mb-2 d-block"></i>
+                                Catégories
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/reclamation?action=list" 
+                               class="btn btn-outline-danger w-100 py-3">
+                                <i class="fas fa-exclamation-circle fa-2x mb-2 d-block"></i>
+                                Réclamations
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="${pageContext.request.contextPath}/statistiques" 
+                               class="btn btn-outline-secondary w-100 py-3">
+                                <i class="fas fa-chart-bar fa-2x mb-2 d-block"></i>
+                                Statistiques
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-modern fade-in">
+                <div class="card-header-custom">
+                    <i class="fas fa-bell"></i> Notifications Récentes
+                </div>
+                <div class="card-body-custom">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-user-plus text-success fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <strong>Nouveau prestataire</strong>
+                                    <p class="mb-0 text-muted small">Il y a 2 heures</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <strong>Nouvelle réclamation</strong>
+                                    <p class="mb-0 text-muted small">Il y a 3 heures</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-calendar-check text-info fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <strong>15 réservations aujourd'hui</strong>
+                                    <p class="mb-0 text-muted small">Il y a 5 heures</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="${pageContext.request.contextPath}/notification?action=list" 
+                       class="btn btn-sm btn-outline-primary w-100 mt-3">
+                        Voir toutes les notifications
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Recent Complaints -->
-    <div class="col-lg-6">
-        <div class="card-modern">
-            <div class="card-header-custom">
-                <i class="fas fa-exclamation-triangle me-2"></i> Réclamations récentes
-            </div>
-            <div class="card-body-custom">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item border-0 px-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">Retard de l'intervention</h6>
-                                <p class="text-muted mb-1 small">Par Sophie Bernard</p>
-                                <span class="badge-custom badge-warning-custom">En cours</span>
-                            </div>
-                            <small class="text-muted">Il y a 2h</small>
-                        </div>
-                    </div>
-                    <div class="list-group-item border-0 px-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">Service non conforme</h6>
-                                <p class="text-muted mb-1 small">Par Pierre Dubois</p>
-                                <span class="badge-custom badge-danger-custom">Nouvelle</span>
-                            </div>
-                            <small class="text-muted">Il y a 5h</small>
-                        </div>
-                    </div>
+
+    <!-- Réclamations en attente -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card card-modern fade-in">
+                <div class="card-header-custom">
+                    <i class="fas fa-exclamation-triangle"></i> Réclamations en Attente
                 </div>
-                <div class="text-center mt-3">
-                    <a href="${pageContext.request.contextPath}/reclamation?action=list" class="btn btn-sm btn-outline-custom">
-                        Toutes les réclamations <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
+                <div class="card-body-custom">
+                    <div class="table-responsive">
+                        <table class="table table-modern">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1</td>
+                                    <td>Jean Martin</td>
+                                    <td>Service non conforme aux attentes</td>
+                                    <td>13/11/2025</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> Voir
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        <a href="${pageContext.request.contextPath}/reclamation?action=list" 
+                                           class="text-decoration-none">
+                                            Voir toutes les réclamations →
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,16 +242,14 @@
 </div>
 
 <style>
-    .avatar-circle {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.875rem;
-    }
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
 </style>
 
-<jsp:include page="../includes/footer.jsp"/>
+<jsp:include page="../shared/footer.jsp"/>
