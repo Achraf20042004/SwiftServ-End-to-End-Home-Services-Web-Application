@@ -232,4 +232,4 @@
     }
 </style>
 
-<jsp:include page="../incldues/footer.jsp"/>
+<jsp:include page="../includes/footer.jsp"/>

@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
                                  https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
 
     <persistence-unit name="servicesPU" transaction-type="RESOURCE_LOCAL">
-
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Scanner automatiquement toutes les entités -->
-        <properties>
+        <!-- Entités -->
+        <class>com.app.model.Admin</class>
+        <class>com.app.model.Client</class>
+        <class>com.app.model.Prestataire</class>
+        <class>com.app.model.CategorieService</class>
+        <class>com.app.model.ServiceDomicile</class>
+        <class>com.app.model.Reservation</class>
+        <class>com.app.model.Intervention</class>
+        <class>com.app.model.Avis</class>
+        <class>com.app.model.Reclamation</class>
+        <class>com.app.model.Notification</class>
+        <class>com.app.model.Statistique</class>
 
-            <!-- Connexion MySQL -->
+        <properties>
+            <!-- Configuration de la connexion MySQL -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/services_domicile?useSSL=false&amp;serverTimezone=UTC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/services_domicile?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
 
-            <!-- Hibernate -->
-           
-            <property name="hibernate.hbm2ddl.auto" value="update"/>  
+            <!-- Configuration Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            
+            <!-- Gestion automatique du schéma -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            
+            <!-- Affichage et formatage des requêtes SQL -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-
+            
+            <!-- Performance -->
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
         </properties>
-
     </persistence-unit>
-
 </persistence>
