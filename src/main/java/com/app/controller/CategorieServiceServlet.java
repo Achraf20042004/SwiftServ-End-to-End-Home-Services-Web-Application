@@ -29,7 +29,7 @@ public class CategorieServiceServlet extends HttpServlet {
             switch (action) {
 
                 case "add":
-                    request.getRequestDispatcher("/WEB-INF/views/categorie/add.jsp")
+                    request.getRequestDispatcher("/WEB-INF/views/categories/add.jsp")
                            .forward(request, response);
                     break;
 
@@ -38,7 +38,7 @@ public class CategorieServiceServlet extends HttpServlet {
                     CategorieService categorie = categorieService.trouver(idEdit);
 
                     request.setAttribute("categorie", categorie);
-                    request.getRequestDispatcher("/WEB-INF/views/categorie/edit.jsp")
+                    request.getRequestDispatcher("/WEB-INF/views/categories/edit.jsp")
                            .forward(request, response);
                     break;
 
@@ -52,7 +52,7 @@ public class CategorieServiceServlet extends HttpServlet {
                     List<CategorieService> liste = categorieService.lister();
                     request.setAttribute("categories", liste);
 
-                    request.getRequestDispatcher("/WEB-INF/views/categorie/list.jsp")
+                    request.getRequestDispatcher("/WEB-INF/views/categories/list.jsp")
                            .forward(request, response);
                     break;
             }
