@@ -31,7 +31,7 @@
                 <div class="stat-icon bg-primary">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="stat-value">18</div>
+                <div class="stat-value">${interventionsMois}</div>
                 <div class="stat-label">Interventions ce mois</div>
                 <div class="mt-2">
                     <small class="text-info">
@@ -46,7 +46,7 @@
                 <div class="stat-icon bg-warning">
                     <i class="fas fa-clock"></i>
                 </div>
-                <div class="stat-value">5</div>
+                <div class="stat-value">${demandesEnAttente}</div>
                 <div class="stat-label">Demandes en Attente</div>
                 <div class="mt-2">
                     <small class="text-warning">
@@ -61,7 +61,7 @@
                 <div class="stat-icon bg-success">
                     <i class="fas fa-star"></i>
                 </div>
-                <div class="stat-value">4.9</div>
+                <div class="stat-value">${noteMoyenne}</div>
                 <div class="stat-label">Note Moyenne</div>
                 <div class="mt-2">
                     <small class="text-success">
@@ -76,7 +76,7 @@
                 <div class="stat-icon bg-info">
                     <i class="fas fa-euro-sign"></i>
                 </div>
-                <div class="stat-value">€2.4K</div>
+                <div class="stat-value">€${revenuMoisPrestataire}</div>
                 <div class="stat-label">Revenus ce mois</div>
                 <div class="mt-2">
                     <small class="text-success">
@@ -99,7 +99,7 @@
                         <p class="text-muted mb-0">
                             Gérez vos réservations clients
                         </p>
-                        <span class="badge bg-warning mt-2">5 en attente</span>
+                        <span class="badge bg-warning mt-2">${demandesEnAttente} en attente</span>
                     </div>
                 </div>
             </a>
@@ -115,7 +115,7 @@
                         <p class="text-muted mb-0">
                             Suivez vos interventions en cours
                         </p>
-                        <span class="badge bg-info mt-2">3 en cours</span>
+                        <span class="badge bg-info mt-2">${interventionsEnCours} en cours</span>
                     </div>
                 </div>
             </a>
@@ -131,7 +131,7 @@
                         <p class="text-muted mb-0">
                             Consultez les avis de vos clients
                         </p>
-                        <span class="badge bg-success mt-2">4.9/5</span>
+                        <span class="badge bg-success mt-2">${noteMoyenne}/5</span>
                     </div>
                 </div>
             </a>
@@ -147,63 +147,35 @@
                 </div>
                 <div class="card-body-custom">
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item px-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">
-                                        <i class="fas fa-wrench text-primary"></i>
-                                        Réparation fuite d'eau
-                                    </h6>
-                                    <p class="mb-1 text-muted">
-                                        <i class="fas fa-user"></i> Jean Martin
-                                    </p>
-                                    <small class="text-muted">
-                                        <i class="fas fa-map-marker-alt"></i> 15 Rue de la Paix, Paris
-                                    </small>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> Demandé le 13 Nov 2025
-                                    </small>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-success mb-1">
-                                        <i class="fas fa-check"></i> Accepter
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-times"></i> Refuser
-                                    </button>
+                        <c:forEach var="r" items="${demandesEnAttenteList}">
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="fas fa-wrench text-primary"></i>
+                                            ${r.service.nom}
+                                        </h6>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-user"></i> ${r.client.prenom} ${r.client.nom}
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> Demandé le ${r.dateReservation}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <a class="btn btn-sm btn-success mb-1" href="${pageContext.request.contextPath}/reservation?action=updateStatus&id=${r.id}&status=EN_COURS">
+                                            <i class="fas fa-check"></i> Accepter
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" href="${pageContext.request.contextPath}/reservation?action=updateStatus&id=${r.id}&status=REFUSEE">
+                                            <i class="fas fa-times"></i> Refuser
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="list-group-item px-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">
-                                        <i class="fas fa-water text-info"></i>
-                                        Installation sanitaire
-                                    </h6>
-                                    <p class="mb-1 text-muted">
-                                        <i class="fas fa-user"></i> Sophie Bernard
-                                    </p>
-                                    <small class="text-muted">
-                                        <i class="fas fa-map-marker-alt"></i> 22 Avenue des Champs, Lyon
-                                    </small>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> Demandé le 12 Nov 2025
-                                    </small>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-success mb-1">
-                                        <i class="fas fa-check"></i> Accepter
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-times"></i> Refuser
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        </c:forEach>
+                        <c:if test="${empty demandesEnAttenteList}">
+                            <div class="text-muted">Aucune demande en attente.</div>
+                        </c:if>
                     </div>
                     
                     <div class="text-center mt-3">

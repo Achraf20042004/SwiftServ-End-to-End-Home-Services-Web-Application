@@ -67,5 +67,18 @@ public class PrestataireService {
             em.close();
         }
     }
+    public long count() throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Prestataire p", Long.class);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du comptage des prestataires", e);
+        } finally {
+            if (em != null) em.close();
+        }
+    }
+
 
 }

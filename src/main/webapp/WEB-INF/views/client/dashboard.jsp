@@ -20,7 +20,7 @@
                 <div class="stat-icon bg-primary">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="stat-value">12</div>
+                <div class="stat-value">${reservationsTotal}</div>
                 <div class="stat-label">Réservations</div>
                 <div class="mt-2">
                     <small class="text-info">
@@ -35,8 +35,8 @@
                 <div class="stat-icon bg-success">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <div class="stat-value">8</div>
-                <div class="stat-label">Services Complétés</div>
+                <div class="stat-value">${reservationsEnCours}</div>
+                <div class="stat-label">Réservations en cours</div>
                 <div class="mt-2">
                     <small class="text-success">
                         <i class="fas fa-thumbs-up"></i> Terminés
@@ -50,8 +50,8 @@
                 <div class="stat-icon bg-warning">
                     <i class="fas fa-star"></i>
                 </div>
-                <div class="stat-value">4.8</div>
-                <div class="stat-label">Note Moyenne</div>
+                <div class="stat-value">${reservationsFutures}</div>
+                <div class="stat-label">Réservations futures</div>
                 <div class="mt-2">
                     <small class="text-warning">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
@@ -65,8 +65,8 @@
                 <div class="stat-icon bg-info">
                     <i class="fas fa-euro-sign"></i>
                 </div>
-                <div class="stat-value">€850</div>
-                <div class="stat-label">Dépenses Totales</div>
+                <div class="stat-value">${avisEnvoyes}</div>
+                <div class="stat-label">Avis envoyés</div>
                 <div class="mt-2">
                     <small class="text-muted">
                         <i class="fas fa-calendar"></i> Cette année

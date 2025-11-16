@@ -68,4 +68,17 @@ public class ClientService {
             em.close();
         }
     }
+    public long count() throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(c) FROM Client c", Long.class);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du comptage des clients", e);
+        } finally {
+            if (em != null) em.close();
+        }
+    }
+
 }

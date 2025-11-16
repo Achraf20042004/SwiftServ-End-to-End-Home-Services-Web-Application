@@ -2,11 +2,13 @@ package com.app.service;
 
 import com.app.dao.GenericDAO;
 import com.app.model.Statistique;
-import java.util.List;
 
 public class StatistiqueService {
 
-    private GenericDAO<Statistique> dao = new GenericDAO<>(Statistique.class);
+    private final GenericDAO<Statistique> dao = new GenericDAO<>(Statistique.class);
+    private final ClientService clientService = new ClientService();
+    private final PrestataireService prestataireService = new PrestataireService();
+    private final ReservationService reservationService = new ReservationService();
 
     public void ajouter(Statistique stat) throws ServiceException {
         try {
@@ -21,14 +23,6 @@ public class StatistiqueService {
             return dao.find(id);
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la recherche des statistiques", e);
-        }
-    }
-
-    public List<Statistique> lister() throws ServiceException {
-        try {
-            return dao.findAll();
-        } catch (Exception e) {
-            throw new ServiceException("Erreur lors de la récupération des statistiques", e);
         }
     }
 
@@ -48,13 +42,20 @@ public class StatistiqueService {
         }
     }
 
-    // ✅ MÉTHODE MANQUANTE POUR LE SERVLET
+    // Statistiques dynamiques calculées depuis la base
     public Statistique getStatistiques() throws ServiceException {
         try {
-            List<Statistique> stats = dao.findAll();
-            return stats.isEmpty() ? null : stats.get(0);  // Retourne la première ligne
+            long totalClients = clientService.count();
+            long totalPrestataires = prestataireService.count();
+            long totalReservations = reservationService.count();
+
+            Statistique s = new Statistique();
+            s.setTotalClients((int) totalClients);
+            s.setTotalPrestataires((int) totalPrestataires);
+            s.setTotalReservations((int) totalReservations);
+            return s;
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors du chargement des statistiques", e);
+            throw new ServiceException("Erreur lors du chargement des statistiques dynamiques", e);
         }
     }
 }

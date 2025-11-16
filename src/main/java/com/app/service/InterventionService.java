@@ -2,6 +2,13 @@ package com.app.service;
 
 import com.app.dao.GenericDAO;
 import com.app.model.Intervention;
+import com.app.utils.JpaUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 public class InterventionService {
@@ -46,5 +53,51 @@ public class InterventionService {
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la suppression de l'intervention", e);
         }
+    }
+
+    // --- Agrégations pour Dashboard Prestataire ---
+    public long countByPrestataire(int prestataireId) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            TypedQuery<Long> q = em.createQuery("SELECT COUNT(i) FROM Intervention i WHERE i.prestataire.id = :pid", Long.class);
+            q.setParameter("pid", prestataireId);
+            return q.getSingleResult();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du comptage des interventions du prestataire", e);
+        } finally { if (em != null) em.close(); }
+    }
+
+    public long countByPrestataireAndStatus(int prestataireId, String statut) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            TypedQuery<Long> q = em.createQuery("SELECT COUNT(i) FROM Intervention i WHERE i.prestataire.id = :pid AND i.statut = :st", Long.class);
+            q.setParameter("pid", prestataireId);
+            q.setParameter("st", statut);
+            return q.getSingleResult();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du comptage des interventions par statut", e);
+        } finally { if (em != null) em.close(); }
+    }
+
+    public long countThisMonthByPrestataire(int prestataireId) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            LocalDate firstDay = LocalDate.now().withDayOfMonth(1);
+            LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+            Date start = Date.from(firstDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date end = Date.from(lastDay.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            TypedQuery<Long> q = em.createQuery(
+                "SELECT COUNT(i) FROM Intervention i WHERE i.prestataire.id = :pid AND i.dateIntervention >= :start AND i.dateIntervention < :end",
+                Long.class);
+            q.setParameter("pid", prestataireId);
+            q.setParameter("start", start);
+            q.setParameter("end", end);
+            return q.getSingleResult();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du comptage des interventions du mois", e);
+        } finally { if (em != null) em.close(); }
     }
 }

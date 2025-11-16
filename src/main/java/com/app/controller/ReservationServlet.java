@@ -67,6 +67,16 @@ public class ReservationServlet extends HttpServlet {
                     response.sendRedirect("reservation?action=list");
                     break;
 
+                case "updateStatus": {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    String status = request.getParameter("status");
+                    reservationService.updateStatus(id, status);
+                    // Retour à la page précédente ou dashboard prestataire
+                    String redirect = request.getHeader("Referer");
+                    response.sendRedirect(redirect != null ? redirect : "dashboard");
+                    break;
+                }
+
                 default: // list
                     List<Reservation> liste = reservationService.lister();
                     request.setAttribute("reservations", liste);

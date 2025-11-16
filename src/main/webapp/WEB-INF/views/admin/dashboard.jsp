@@ -31,7 +31,8 @@
                 <div class="stat-icon bg-primary">
                     <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-value">245</div>
+                <div class="stat-value">${totalClients}</div>
+            
                 <div class="stat-label">Clients Actifs</div>
                 <div class="mt-2">
                     <small class="text-success">
@@ -46,7 +47,8 @@
                 <div class="stat-icon bg-success">
                     <i class="fas fa-user-tie"></i>
                 </div>
-                <div class="stat-value">78</div>
+                <div class="stat-value">${totalPrestataires}</div>
+                
                 <div class="stat-label">Prestataires</div>
                 <div class="mt-2">
                     <small class="text-success">
@@ -61,7 +63,7 @@
                 <div class="stat-icon bg-warning">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="stat-value">432</div>
+                <div class="stat-value">${totalReservations}</div>
                 <div class="stat-label">Réservations</div>
                 <div class="mt-2">
                     <small class="text-warning">
@@ -76,8 +78,8 @@
                 <div class="stat-icon bg-info">
                     <i class="fas fa-euro-sign"></i>
                 </div>
-                <div class="stat-value">€15.2K</div>
-                <div class="stat-label">Revenus ce mois</div>
+                <div class="stat-value">€${revenuMoisAdmin}</div>
+                <div class="stat-label">Revenus ce mois (1,5%)</div>
                 <div class="mt-2">
                     <small class="text-success">
                         <i class="fas fa-arrow-up"></i> +8% vs mois dernier

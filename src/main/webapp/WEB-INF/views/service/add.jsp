@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouveau Service" scope="request"/>
-<jsp:include page="../includes/header.jsp"/>
+<jsp:include page="../shared/header.jsp"/>
 
 <div class="row mb-4 fade-in">
     <div class="col-12">
@@ -153,4 +153,4 @@
     });
 </script>
 
-<jsp:include page="../includes/footer.jsp"/>
+<jsp:include page="../shared/footer.jsp"/>

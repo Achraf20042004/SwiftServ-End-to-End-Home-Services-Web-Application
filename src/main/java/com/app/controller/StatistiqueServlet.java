@@ -22,6 +22,14 @@ public class StatistiqueServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Sécurité: réservé à l'admin connecté
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("role") == null ||
+                !"admin".equals(session.getAttribute("role"))) {
+            response.sendRedirect("login");
+            return;
+        }
+
         try {
             Statistique stats = statistiqueService.getStatistiques();
             request.setAttribute("stats", stats);
