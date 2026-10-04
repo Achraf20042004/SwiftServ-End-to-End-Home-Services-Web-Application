@@ -3,19 +3,19 @@ package com.app.controller;
 import com.app.model.CategorieService;
 import com.app.service.CategorieServiceService;
 import com.app.service.ServiceException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.util.List;
 
+/** Gestion des catégories de services (réservée aux administrateurs, voir AuthFilter). */
 @WebServlet("/categorie")
 public class CategorieServiceServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private CategorieServiceService categorieService = new CategorieServiceService();
 
     @Override
@@ -27,36 +27,20 @@ public class CategorieServiceServlet extends HttpServlet {
 
         try {
             switch (action) {
-
                 case "add":
-                    request.getRequestDispatcher("/WEB-INF/views/categories/add.jsp")
-                           .forward(request, response);
+                    request.getRequestDispatcher("/WEB-INF/views/categories/add.jsp").forward(request, response);
                     break;
 
                 case "edit":
-                    int idEdit = Integer.parseInt(request.getParameter("id"));
-                    CategorieService categorie = categorieService.trouver(idEdit);
-
-                    request.setAttribute("categorie", categorie);
-                    request.getRequestDispatcher("/WEB-INF/views/categories/edit.jsp")
-                           .forward(request, response);
-                    break;
-
-                case "delete":
-                    int idDelete = Integer.parseInt(request.getParameter("id"));
-                    categorieService.supprimer(idDelete);
-                    response.sendRedirect("categorie?action=list");
+                    request.setAttribute("categorie", categorieService.trouver(Integer.parseInt(request.getParameter("id"))));
+                    request.getRequestDispatcher("/WEB-INF/views/categories/edit.jsp").forward(request, response);
                     break;
 
                 default:
-                    List<CategorieService> liste = categorieService.lister();
-                    request.setAttribute("categories", liste);
-
-                    request.getRequestDispatcher("/WEB-INF/views/categories/list.jsp")
-                           .forward(request, response);
+                    request.setAttribute("categories", categorieService.lister());
+                    request.getRequestDispatcher("/WEB-INF/views/categories/list.jsp").forward(request, response);
                     break;
             }
-
         } catch (ServiceException e) {
             throw new ServletException(e);
         }
@@ -66,32 +50,25 @@ public class CategorieServiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
         try {
             if ("add".equals(action)) {
-
                 CategorieService c = new CategorieService();
                 c.setNom(request.getParameter("nom"));
                 c.setDescription(request.getParameter("description"));
-
                 categorieService.ajouter(c);
-                response.sendRedirect("categorie?action=list");
             }
-
             else if ("edit".equals(action)) {
-
-                int id = Integer.parseInt(request.getParameter("id"));
-                CategorieService c = categorieService.trouver(id);
-
+                CategorieService c = categorieService.trouver(Integer.parseInt(request.getParameter("id")));
                 c.setNom(request.getParameter("nom"));
                 c.setDescription(request.getParameter("description"));
-
                 categorieService.modifier(c);
-                response.sendRedirect("categorie?action=list");
             }
-
+            else if ("delete".equals(action)) {
+                categorieService.supprimer(Integer.parseInt(request.getParameter("id")));
+            }
+            response.sendRedirect("categorie?action=list");
         } catch (ServiceException e) {
             throw new ServletException(e);
         }

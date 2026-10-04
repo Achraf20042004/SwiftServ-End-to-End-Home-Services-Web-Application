@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,11 +22,30 @@ public class JpaUtil {
     // Initialisation statique de l'EntityManagerFactory
     static {
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, connectionOverrides());
             LOGGER.info("✅ EntityManagerFactory créé avec succès");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "❌ Erreur lors de la création de l'EntityManagerFactory", e);
             throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    /**
+     * Paramètres de connexion lus dans les variables d'environnement, pour ne pas
+     * garder d'identifiants dans le code (sinon : valeurs de persistence.xml).
+     */
+    private static Map<String, String> connectionOverrides() {
+        Map<String, String> props = new HashMap<>();
+        putIfSet(props, "jakarta.persistence.jdbc.url", "DB_URL");
+        putIfSet(props, "jakarta.persistence.jdbc.user", "DB_USER");
+        putIfSet(props, "jakarta.persistence.jdbc.password", "DB_PASSWORD");
+        return props;
+    }
+
+    private static void putIfSet(Map<String, String> props, String property, String envVar) {
+        String value = System.getenv(envVar);
+        if (value != null) {
+            props.put(property, value);
         }
     }
 

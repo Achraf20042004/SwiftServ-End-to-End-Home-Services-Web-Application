@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Intervention" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -55,6 +56,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/intervention?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${intervention.id}">
                     
                     <!-- Intervention Info Card -->
@@ -71,14 +73,14 @@
                                 <i class="fas fa-user"></i>
                                 <div>
                                     <small>Client</small>
-                                    <strong>${intervention.reservation.client.nom} ${intervention.reservation.client.prenom}</strong>
+                                    <strong>${fn:escapeXml(intervention.reservation.client.nom)} ${fn:escapeXml(intervention.reservation.client.prenom)}</strong>
                                 </div>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-briefcase"></i>
                                 <div>
                                     <small>Service</small>
-                                    <strong>${intervention.reservation.service.nom}</strong>
+                                    <strong>${fn:escapeXml(intervention.reservation.service.nom)}</strong>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +93,7 @@
                         </label>
                         <div class="form-control-modern bg-light">
                             <i class="fas fa-link me-2"></i>
-                            Réservation #${intervention.reservation.id} - ${intervention.reservation.service.nom}
+                            Réservation #${intervention.reservation.id} - ${fn:escapeXml(intervention.reservation.service.nom)}
                         </div>
                     </div>
                     
@@ -103,7 +105,7 @@
                         <select class="form-select-modern" id="prestataire_id" name="prestataire_id" required>
                             <c:forEach var="prestataire" items="${prestataires}">
                                 <option value="${prestataire.id}" ${intervention.prestataire.id == prestataire.id ? 'selected' : ''}>
-                                    ${prestataire.nom} ${prestataire.prenom} - ${prestataire.specialite}
+                                    ${fn:escapeXml(prestataire.nom)} ${fn:escapeXml(prestataire.prenom)} - ${fn:escapeXml(prestataire.specialite)}
                                 </option>
                             </c:forEach>
                         </select>

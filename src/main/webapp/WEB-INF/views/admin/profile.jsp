@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Mon Profil" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -20,6 +21,7 @@
                 </div>
                 <div class="card-body-custom">
                     <form method="post" action="${pageContext.request.contextPath}/profile">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -30,7 +32,7 @@
                                        class="form-control form-control-modern" 
                                        id="nom" 
                                        name="nom" 
-                                       value="${user.nom}"
+                                       value="${fn:escapeXml(user.nom)}"
                                        required>
                             </div>
                             
@@ -42,7 +44,7 @@
                                        class="form-control form-control-modern" 
                                        id="prenom" 
                                        name="prenom" 
-                                       value="${user.prenom}"
+                                       value="${fn:escapeXml(user.prenom)}"
                                        required>
                             </div>
                         </div>
@@ -55,7 +57,7 @@
                                    class="form-control form-control-modern" 
                                    id="email" 
                                    name="email" 
-                                   value="${user.email}"
+                                   value="${fn:escapeXml(user.email)}"
                                    required>
                         </div>
 
@@ -67,7 +69,7 @@
                                    class="form-control form-control-modern" 
                                    id="telephone" 
                                    name="telephone" 
-                                   value="${user.telephone}">
+                                   value="${fn:escapeXml(user.telephone)}">
                         </div>
 
                         <hr class="my-4">

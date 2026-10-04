@@ -1,0 +1,38 @@
+# Lance MySQL + Tomcat avec l'application (après "mvn package").
+#   docker compose up -d   ->   http://localhost:8080/services-domicile
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: services_domicile_mysql
+    environment:
+      MYSQL_DATABASE: services_domicile
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-change-me}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD:-change-me}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  tomcat:
+    image: tomcat:10.1-jdk17
+    container_name: services_domicile_tomcat
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/services_domicile?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-change-me}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@services.test}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-please}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./target/services-domicile.war:/usr/local/tomcat/webapps/services-domicile.war:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

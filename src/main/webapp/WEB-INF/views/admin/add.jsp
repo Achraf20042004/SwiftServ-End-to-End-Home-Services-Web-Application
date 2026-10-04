@@ -26,6 +26,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/admin?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Personal Information -->
                     <div class="mb-4">

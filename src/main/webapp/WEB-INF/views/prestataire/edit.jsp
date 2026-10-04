@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Prestataire" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/prestataire?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${prestataire.id}">
                     
                     <!-- Prestataire Info Summary -->
@@ -64,7 +66,7 @@
                                 <i class="fas fa-user me-1"></i> Nom *
                             </label>
                             <input type="text" class="form-control-modern" id="nom" name="nom" 
-                                   value="${prestataire.nom}" required>
+                                   value="${fn:escapeXml(prestataire.nom)}" required>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -72,7 +74,7 @@
                                 <i class="fas fa-user me-1"></i> Prénom *
                             </label>
                             <input type="text" class="form-control-modern" id="prenom" name="prenom" 
-                                   value="${prestataire.prenom}" required>
+                                   value="${fn:escapeXml(prestataire.prenom)}" required>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -80,7 +82,7 @@
                                 <i class="fas fa-envelope me-1"></i> Email *
                             </label>
                             <input type="email" class="form-control-modern" id="email" name="email" 
-                                   value="${prestataire.email}" required>
+                                   value="${fn:escapeXml(prestataire.email)}" required>
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i> L'email ne peut pas être modifié
                             </small>
@@ -91,7 +93,7 @@
                                 <i class="fas fa-phone me-1"></i> Téléphone *
                             </label>
                             <input type="tel" class="form-control-modern" id="telephone" name="telephone" 
-                                   value="${prestataire.telephone}" required>
+                                   value="${fn:escapeXml(prestataire.telephone)}" required>
                         </div>
                     </div>
                     

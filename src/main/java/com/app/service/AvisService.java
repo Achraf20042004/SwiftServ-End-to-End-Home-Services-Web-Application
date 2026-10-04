@@ -41,7 +41,7 @@ public class AvisService {
         try {
             em = JpaUtil.getEntityManager();
             TypedQuery<Avis> q = em.createQuery(
-                "SELECT a FROM Avis a WHERE a.client.id = :cid ORDER BY a.dateAvis DESC",
+                "SELECT a FROM Avis a LEFT JOIN FETCH a.client LEFT JOIN FETCH a.prestataire WHERE a.client.id = :cid ORDER BY a.id DESC",
                 Avis.class);
             q.setParameter("cid", clientId);
             return q.getResultList();
@@ -57,7 +57,7 @@ public class AvisService {
         try {
             em = JpaUtil.getEntityManager();
             TypedQuery<Avis> q = em.createQuery(
-                "SELECT a FROM Avis a WHERE a.prestataire.id = :pid ORDER BY a.dateAvis DESC",
+                "SELECT a FROM Avis a LEFT JOIN FETCH a.client LEFT JOIN FETCH a.prestataire WHERE a.prestataire.id = :pid ORDER BY a.id DESC",
                 Avis.class);
             q.setParameter("pid", prestataireId);
             return q.getResultList();
@@ -84,7 +84,7 @@ public class AvisService {
         }
     }
 
-    // --- Statistiques globales ---
+  
     public long countTotal() throws ServiceException {
         EntityManager em = null;
         try {
@@ -135,7 +135,7 @@ public class AvisService {
         }
     }
 
-    // --- Agrégations par Client ---
+   
     public long countByClient(int clientId) throws ServiceException {
         EntityManager em = null;
         try {
@@ -167,7 +167,7 @@ public class AvisService {
         }
     }
 
-    // --- Agrégations par Prestataire ---
+
     public long countByPrestataire(int prestataireId) throws ServiceException {
         EntityManager em = null;
         try {

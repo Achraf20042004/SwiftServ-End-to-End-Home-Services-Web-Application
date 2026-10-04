@@ -1,167 +1,263 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <c:set var="pageTitle" value="Notifications" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
 
-<div class="row mb-4 fade-in">
-    <div class="col-12">
-        <div class="page-header d-flex justify-content-between align-items-center">
-            <div>
-                <h1><i class="fas fa-bell text-gradient me-2"></i> Centre de notifications</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/dashboard">Accueil</a></li>
-                        <li class="breadcrumb-item active">Notifications</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-custom" onclick="markAllAsRead()">
-                    <i class="fas fa-check-double me-2"></i> Tout marquer comme lu
-                </button>
-                <a href="${pageContext.request.contextPath}/notification?action=add" class="btn btn-primary-custom">
-                    <i class="fas fa-plus me-2"></i> Nouvelle notification
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Filter Tabs -->
-<div class="row mb-4 fade-in">
-    <div class="col-12">
-        <div class="card-modern">
-            <div class="card-body-custom">
-                <ul class="nav nav-pills" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="?filter=all">
-                            <i class="fas fa-inbox me-1"></i> Toutes <span class="badge bg-light text-dark ms-1">24</span>
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="notif-header">
+                <div class="notif-header-content">
+                    <div class="notif-header-text">
+                        <h1>
+                            <i class="fas fa-bell"></i>
+                            Centre de Notifications
+                        </h1>
+                        <p>Restez informé de toutes vos activités</p>
+                    </div>
+                    <c:if test="${sessionScope.role == 'admin'}">
+                        <a href="${pageContext.request.contextPath}/notification?action=add" class="btn-add-notif">
+                            <i class="fas fa-plus"></i>
+                            <span>Nouvelle notification</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?filter=unread">
-                            <i class="fas fa-envelope me-1"></i> Non lues <span class="badge bg-primary ms-1">8</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?filter=important">
-                            <i class="fas fa-star me-1"></i> Importantes <span class="badge bg-warning ms-1">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?filter=archived">
-                            <i class="fas fa-archive me-1"></i> Archivées
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Notifications List -->
-<div class="row fade-in">
-    <div class="col-12">
-        <div class="card-modern">
-            <div class="card-body-custom p-0">
-                <div class="notifications-list">
-                    <c:forEach var="notification" items="${notifications}">
-                        <div class="notification-item ${notification.statut == 'NON_LUE' ? 'unread' : ''}">
-                            <div class="notification-icon ${notification.type}">
-                                <c:choose>
-                                    <c:when test="${notification.type == 'RESERVATION'}">
-                                        <i class="fas fa-calendar-check"></i>
-                                    </c:when>
-                                    <c:when test="${notification.type == 'INTERVENTION'}">
-                                        <i class="fas fa-tools"></i>
-                                    </c:when>
-                                    <c:when test="${notification.type == 'RECLAMATION'}">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </c:when>
-                                    <c:when test="${notification.type == 'AVIS'}">
-                                        <i class="fas fa-star"></i>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <i class="fas fa-info-circle"></i>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                            
-                            <div class="notification-content flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h6 class="mb-0">${notification.titre}</h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>
-                                        <c:out value="${notification.dateEnvoi}" default="À l'instant"/>
-                                    </small>
-                                </div>
-                                <p class="notification-message mb-2">${notification.message}</p>
-                                <div class="notification-meta">
-                                    <span class="badge-custom ${notification.type == 'RECLAMATION' ? 'badge-danger-custom' : notification.type == 'INTERVENTION' ? 'badge-warning-custom' : 'badge-info-custom'}">
-                                        ${notification.type}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="notification-actions">
-                                <c:if test="${notification.statut == 'NON_LUE'}">
-                                    <button class="btn btn-sm btn-light" onclick="markAsRead(${notification.id})" title="Marquer comme lu">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </c:if>
-                                <button class="btn btn-sm btn-light" onclick="archiveNotification(${notification.id})" title="Archiver">
-                                    <i class="fas fa-archive"></i>
-                                </button>
-                                <a href="${pageContext.request.contextPath}/notification?action=delete&id=${notification.id}" 
-                                   class="btn btn-sm btn-light btn-delete-confirm" title="Supprimer">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </c:forEach>
-                    
-                    <c:if test="${empty notifications}">
-                        <div class="text-center py-5">
-                            <i class="fas fa-bell-slash fa-3x text-muted mb-3 d-block"></i>
-                            <h5 class="text-muted mb-2">Aucune notification</h5>
-                            <p class="text-muted mb-0">Vous êtes à jour !</p>
-                        </div>
                     </c:if>
+                </div>
+                <div class="notif-header-decoration">
+                    <div class="floating-bell bell-1"><i class="fas fa-bell"></i></div>
+                    <div class="floating-bell bell-2"><i class="fas fa-bell"></i></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="notif-stat-card stat-total">
+                <div class="stat-card-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-card-info">
+                    <div class="stat-card-value">${totalNotifications != null ? totalNotifications : 0}</div>
+                    <div class="stat-card-label">Total Notifications</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="notif-stat-card stat-unread">
+                <div class="stat-card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-card-info">
+                    <div class="stat-card-value">${totalNotifications != null ? totalNotifications : 0}</div>
+                    <div class="stat-card-label">Non lues</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="notif-stat-card stat-today">
+                <div class="stat-card-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-card-info">
+                    <div class="stat-card-value">0</div>
+                    <div class="stat-card-label">Aujourd'hui</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Title -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="section-header">
+                <h3><i class="fas fa-list-ul me-2"></i>Toutes les notifications</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="notif-list-container">
+                <c:forEach var="notification" items="${notifications}" varStatus="status">
+                    <div class="notif-card" style="animation-delay: ${status.index * 0.1}s">
+                        <div class="notif-card-indicator"></div>
+                        <div class="notif-card-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="notif-card-content">
+                            <p class="notif-message">${fn:escapeXml(notification.message)}</p>
+                            <div class="notif-meta">
+                                <span class="notif-time">
+                                    <i class="fas fa-clock"></i>
+                                    <fmt:formatDate value="${notification.dateNotification}" pattern="dd MMM yyyy à HH:mm"/>
+                                </span>
+                                <c:if test="${sessionScope.role == 'admin'}">
+                                    <span class="notif-client">
+                                        <i class="fas fa-user"></i>
+                                        ${fn:escapeXml(notification.client.prenom)} ${fn:escapeXml(notification.client.nom)}
+                                    </span>
+                                </c:if>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <a href="${pageContext.request.contextPath}/notification?action=delete&id=${notification.id}" 
+                               class="btn-delete btn-delete-confirm" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </c:forEach>
+                
+                <c:if test="${empty notifications}">
+                    <div class="empty-notif">
+                        <div class="empty-icon">
+                            <i class="fas fa-bell-slash"></i>
+                        </div>
+                        <h4>Aucune notification</h4>
+                        <p>Vous êtes à jour ! Aucune nouvelle notification pour le moment.</p>
+                    </div>
+                </c:if>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Conseils (affichée quand peu de notifications) -->
+    <c:if test="${totalNotifications == null || totalNotifications < 3}">
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="tips-section">
+                    <h5><i class="fas fa-lightbulb me-2"></i>Le saviez-vous ?</h5>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <div class="tip-icon"><i class="fas fa-calendar-check"></i></div>
+                            <div class="tip-content">
+                                <h6>Gérez vos réservations</h6>
+                                <p>Suivez l'état de vos réservations en temps réel</p>
+                            </div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-icon"><i class="fas fa-star"></i></div>
+                            <div class="tip-content">
+                                <h6>Laissez un avis</h6>
+                                <p>Partagez votre expérience avec la communauté</p>
+                            </div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-icon"><i class="fas fa-headset"></i></div>
+                            <div class="tip-content">
+                                <h6>Besoin d'aide ?</h6>
+                                <p>Notre équipe est disponible pour vous aider</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:if>
+
 </div>
 
 <style>
-    .notifications-list {
-        display: flex;
-        flex-direction: column;
+    /* Header */
+    .notif-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 1.5rem;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        color: white;
     }
     
-    .notification-item {
+    .notif-header-content {
         display: flex;
-        gap: 1rem;
-        padding: 1.5rem;
-        border-bottom: 1px solid #f3f4f6;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .notif-header-text h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .notif-header-text p {
+        opacity: 0.9;
+        margin: 0;
+        font-size: 1rem;
+    }
+    
+    .btn-add-notif {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
         transition: all 0.3s ease;
+    }
+    
+    .btn-add-notif:hover {
         background: white;
+        color: #1d4ed8;
+        transform: translateY(-2px);
     }
     
-    .notification-item:hover {
-        background: #f9fafb;
+    .notif-header-decoration {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 40%;
     }
     
-    .notification-item:last-child {
-        border-bottom: none;
+    .floating-bell {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.15);
+        animation: ring 2s ease-in-out infinite;
     }
     
-    .notification-item.unread {
-        background: #eff6ff;
-        border-left: 4px solid var(--primary-color);
+    .bell-1 { top: 20%; right: 15%; font-size: 3rem; }
+    .bell-2 { top: 60%; right: 25%; font-size: 2rem; animation-delay: 0.5s; }
+    
+    @keyframes ring {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(15deg); }
+        75% { transform: rotate(-15deg); }
     }
     
-    .notification-icon {
+    /* Stat Cards */
+    .notif-stat-card {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .notif-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stat-card-icon {
         width: 50px;
         height: 50px;
         border-radius: 12px;
@@ -170,92 +266,331 @@
         justify-content: center;
         font-size: 1.25rem;
         color: white;
-        flex-shrink: 0;
     }
     
-    .notification-icon.RESERVATION {
-        background: linear-gradient(135deg, #10b981, #34d399);
+    .stat-total .stat-card-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+    .stat-unread .stat-card-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .stat-today .stat-card-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+    
+    .stat-card-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1f2937;
+        line-height: 1;
     }
     
-    .notification-icon.INTERVENTION {
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    .stat-card-label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
     
-    .notification-icon.RECLAMATION {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-    }
-    
-    .notification-icon.AVIS {
-        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-    }
-    
-    .notification-icon.SYSTEME {
-        background: linear-gradient(135deg, #4f46e5, #6366f1);
-    }
-    
-    .notification-message {
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-        line-height: 1.5;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    .notification-actions {
+    /* Section Header */
+    .section-header {
         display: flex;
-        gap: 0.5rem;
-        flex-shrink: 0;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    .nav-pills .nav-link {
-        color: var(--text-secondary);
-        border-radius: 0.5rem;
-        padding: 0.5rem 1rem;
-        margin-right: 0.5rem;
+    .section-header h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
     }
     
-    .nav-pills .nav-link:hover {
-        background-color: var(--light-gray);
+    /* Notification Cards */
+    .notif-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
     
-    .nav-pills .nav-link.active {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-        color: white;
-    }
-</style>
-
-<script>
-    function markAsRead(id) {
-        // Simulate AJAX call
-        fetch('${pageContext.request.contextPath}/notification?action=markRead&id=' + id)
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                }
-            });
+    .notif-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.5s ease forwards;
+        opacity: 0;
     }
     
-    function markAllAsRead() {
-        if (confirm('Marquer toutes les notifications comme lues ?')) {
-            fetch('${pageContext.request.contextPath}/notification?action=markAllRead')
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    }
-                });
+    .notif-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
     
-    function archiveNotification(id) {
-        fetch('${pageContext.request.contextPath}/notification?action=archive&id=' + id)
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                }
-            });
+    .notif-card-indicator {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, #3b82f6, #60a5fa);
     }
-</script>
+    
+    .notif-card-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .notif-card-content {
+        flex: 1;
+    }
+    
+    .notif-message {
+        margin: 0 0 0.5rem;
+        font-size: 0.95rem;
+        color: #1f2937;
+        line-height: 1.5;
+    }
+    
+    .notif-meta {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+    
+    .notif-meta i {
+        margin-right: 0.25rem;
+        color: #3b82f6;
+    }
+    
+    .notif-card-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-delete {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid #fee2e2;
+        background: #fef2f2;
+        color: #ef4444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-delete:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+    
+    /* Empty State */
+    .empty-notif {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        color: #3b82f6;
+    }
+    
+    .empty-notif h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-notif p {
+        color: #6b7280;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .notif-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .notif-header-text h1 {
+            font-size: 1.5rem;
+        }
+        
+        .btn-add-notif {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .notif-meta {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        /* Tips Section */
+.tips-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(29, 78, 216, 0.05));
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.tips-section h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.tip-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tip-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.tip-content h6 {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.tip-content p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+    }
+ /* Tips Section */
+.tips-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(29, 78, 216, 0.05));
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.tips-section h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.tip-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tip-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.tip-content h6 {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.tip-content p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 <jsp:include page="../shared/footer.jsp"/>

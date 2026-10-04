@@ -37,11 +37,27 @@ public class GenericDAO<T> {
 
     public List<T> findAll() {
         EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction(); 
         try {
-            return em.createQuery("FROM " + entityClass.getSimpleName(), entityClass)
-                     .getResultList();
+            tx.begin(); 
+            String hql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
+            
+            List<T> result = em.createQuery(hql, entityClass)
+                               .getResultList();
+            
+            tx.commit(); 
+            return result;
+            
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+        
+            System.err.println("Erreur lors de findAll dans GenericDAO : " + e.getMessage());
+      
+            throw new RuntimeException("Erreur DAO lors du listage des entités : " + entityClass.getSimpleName(), e); 
+            
         } finally {
-            em.close();
+            
+            em.close(); 
         }
     }
 

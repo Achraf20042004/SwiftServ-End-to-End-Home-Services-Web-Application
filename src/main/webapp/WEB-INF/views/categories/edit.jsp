@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Catégorie" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -20,6 +21,7 @@
                 </div>
                 <div class="card-body-custom">
                     <form method="post" action="${pageContext.request.contextPath}/categorie">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="id" value="${categorie.id}">
 
@@ -31,7 +33,7 @@
                                    class="form-control form-control-modern" 
                                    id="nom" 
                                    name="nom" 
-                                   value="${categorie.nom}"
+                                   value="${fn:escapeXml(categorie.nom)}"
                                    required 
                                    autofocus>
                         </div>
@@ -43,7 +45,7 @@
                             <textarea class="form-control form-control-modern" 
                                       id="description" 
                                       name="description" 
-                                      rows="4">${categorie.description}</textarea>
+                                      rows="4">${fn:escapeXml(categorie.description)}</textarea>
                             <small class="text-muted">Optionnel</small>
                         </div>
 

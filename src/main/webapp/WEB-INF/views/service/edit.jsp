@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Service" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/service?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${service.id}">
                     
                     <div class="alert alert-info-modern mb-4">
@@ -40,7 +42,7 @@
                             <i class="fas fa-tag me-1"></i> Nom du service *
                         </label>
                         <input type="text" class="form-control-modern" id="nom" name="nom" 
-                               value="${service.nom}" required>
+                               value="${fn:escapeXml(service.nom)}" required>
                     </div>
                     
                     <div class="row">
@@ -52,7 +54,7 @@
                                 <option value="">Sélectionner une catégorie</option>
                                 <c:forEach var="cat" items="${categories}">
                                     <option value="${cat.id}" ${service.categorie.id == cat.id ? 'selected' : ''}>
-                                        ${cat.nom}
+                                        ${fn:escapeXml(cat.nom)}
                                     </option>
                                 </c:forEach>
                             </select>
@@ -77,9 +79,9 @@
                             <div class="service-icon bg-info">
                                 <i class="fas fa-concierge-bell"></i>
                             </div>
-                            <h5 class="preview-name mt-3 mb-2">${service.nom}</h5>
+                            <h5 class="preview-name mt-3 mb-2">${fn:escapeXml(service.nom)}</h5>
                             <p class="text-muted small mb-2">
-                                <i class="fas fa-tag me-1"></i> <span class="preview-category">${service.categorie.nom}</span>
+                                <i class="fas fa-tag me-1"></i> <span class="preview-category">${fn:escapeXml(service.categorie.nom)}</span>
                             </p>
                             <div class="price-tag">
                                 <span class="preview-price">${service.prix}€</span>

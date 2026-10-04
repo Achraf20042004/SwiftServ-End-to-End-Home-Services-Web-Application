@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Réservations" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -99,21 +100,21 @@
                                                     <i class="fas fa-user"></i>
                                                 </div>
                                                 <div>
-                                                    <strong>${reservation.client.nom} ${reservation.client.prenom}</strong>
-                                                    <br><small class="text-muted">${reservation.client.email}</small>
+                                                    <strong>${fn:escapeXml(reservation.client.nom)} ${fn:escapeXml(reservation.client.prenom)}</strong>
+                                                    <br><small class="text-muted">${fn:escapeXml(reservation.client.email)}</small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <i class="fas fa-briefcase text-info me-1"></i>
-                                            ${reservation.service.nom}
+                                            ${fn:escapeXml(reservation.service.nom)}
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-circle bg-success me-2">
                                                     <i class="fas fa-user-tie"></i>
                                                 </div>
-                                                <span>${reservation.prestataire.nom} ${reservation.prestataire.prenom}</span>
+                                                <span>${fn:escapeXml(reservation.prestataire.nom)} ${fn:escapeXml(reservation.prestataire.prenom)}</span>
                                             </div>
                                         </td>
                                         <td>

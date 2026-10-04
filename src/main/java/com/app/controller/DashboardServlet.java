@@ -1,5 +1,8 @@
 package com.app.controller;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,13 +20,20 @@ import com.app.service.ReservationService;
 import com.app.service.AvisService;
 import com.app.service.InterventionService;
 import com.app.service.ReclamationService;
+import com.app.service.NotificationService;
 import com.app.model.Client;
 import com.app.model.Prestataire;
 import com.app.model.Reservation;
 import com.app.model.Avis;
+import com.app.model.Notification;
+import com.app.service.ServiceDomicileService;
+import com.app.model.ServiceDomicile;
+
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(DashboardServlet.class.getName());
 
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +43,9 @@ public class DashboardServlet extends HttpServlet {
     private AvisService avisService = new AvisService();
     private InterventionService interventionService = new InterventionService();
     private ReclamationService reclamationService = new ReclamationService();
-
+    private NotificationService notificationService = new NotificationService();
+    private ServiceDomicileService serviceDomicileService = new ServiceDomicileService();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -70,40 +82,73 @@ public class DashboardServlet extends HttpServlet {
                 break;
 
             case "CLIENT":
+                Client client = (Client) session.getAttribute("user");
+                
                 try {
-                    Client client = (Client) session.getAttribute("user");
-
                     // Statistiques réservations
                     request.setAttribute("reservationsTotal",
                             reservationService.countByClient(client.getId()));
-
                     request.setAttribute("reservationsEnCours",
                             reservationService.countByClientAndStatus(client.getId(), "EN_COURS"));
-
                     request.setAttribute("reservationsFutures",
                             reservationService.countFuturesByClient(client.getId()));
-
-                    // Statistiques avis - RÉELLES
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
+                try {
+                    // Statistiques avis
                     long totalAvis = avisService.countByClient(client.getId());
                     double moyenneAvis = avisService.moyenneNoteClient(client.getId());
-                    
                     request.setAttribute("avisEnvoyes", totalAvis);
                     request.setAttribute("moyenneAvis", moyenneAvis);
-
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
+                try {
                     // Réclamations
                     request.setAttribute("reclamationsTotal",
                             reclamationService.countByClient(client.getId()));
-
-                    // Listes pour affichage
-                    List<Reservation> mesReservations = reservationService.listerParClient(client.getId());
-                    List<Avis> mesAvis = avisService.listerParClient(client.getId());
-                    
-                    request.setAttribute("mesReservations", mesReservations);
-                    request.setAttribute("mesAvis", mesAvis);
-
                 } catch (ServiceException e) {
-                    request.setAttribute("error", "Erreur lors du chargement des statistiques client.");
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
                 }
+                
+                try {
+                    // Réservations récentes
+                    List<Reservation> reservationsRecentes = reservationService.listerParClient(client.getId());
+                    request.setAttribute("reservationsRecentes", reservationsRecentes);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
+                try {
+                    // Notifications récentes
+                    List<Notification> notificationsRecentes = notificationService.listerParClient(client.getId());
+                    request.setAttribute("notificationsRecentes", notificationsRecentes);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
+                try {
+                    // Avis
+                    List<Avis> mesAvis = avisService.listerParClient(client.getId());
+                    request.setAttribute("mesAvis", mesAvis);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
+                try {
+                    // Services populaires
+                    List<ServiceDomicile> servicesPopulaires = serviceDomicileService.lister();
+                    if (servicesPopulaires.size() > 4) {
+                        servicesPopulaires = servicesPopulaires.subList(0, 4);
+                    }
+                    request.setAttribute("servicesPopulaires", servicesPopulaires);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+                
                 request.getRequestDispatcher("/WEB-INF/views/client/dashboard.jsp")
                        .forward(request, response);
                 break;
@@ -130,7 +175,7 @@ public class DashboardServlet extends HttpServlet {
                     request.setAttribute("revenuMoisPrestataire",
                             reservationService.getPrestataireRevenueCurrentMonth(p.getId()));
 
-                    // Statistiques avis - RÉELLES
+                    // Statistiques avis
                     long totalAvisPrestataire = avisService.countByPrestataire(p.getId());
                     double noteMoyenne = avisService.moyenneNotePrestataire(p.getId());
                     double tauxSatisfaction = avisService.tauxSatisfactionPrestataire(p.getId());
@@ -148,8 +193,8 @@ public class DashboardServlet extends HttpServlet {
                     request.setAttribute("avisRecus", avisRecus);
 
                 } catch (ServiceException e) {
-                    e.printStackTrace();
-                    request.setAttribute("error", "Erreur lors du chargement des statistiques prestataire.");
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                    request.setAttribute("error", "Erreur lors du chargement des statistiques client: " + e.getMessage());
                 }
                 request.getRequestDispatcher("/WEB-INF/views/prestataire/dashboard.jsp")
                        .forward(request, response);

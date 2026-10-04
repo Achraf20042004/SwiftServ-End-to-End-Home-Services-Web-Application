@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Interventions" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -31,8 +32,8 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <div>
-                    <h4 class="mb-0">24</h4>
-                    <p class="mb-0">En attente</p>
+                    <h4 class="mb-0">${countPlanifiee}</h4>
+					<p class="mb-0">En attente</p>
                 </div>
             </div>
         </div>
@@ -44,8 +45,8 @@
                     <i class="fas fa-play"></i>
                 </div>
                 <div>
-                    <h4 class="mb-0">12</h4>
-                    <p class="mb-0">En cours</p>
+                    <h4 class="mb-0">${countEnCours}</h4>
+					<p class="mb-0">En cours</p>
                 </div>
             </div>
         </div>
@@ -57,8 +58,8 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h4 class="mb-0">156</h4>
-                    <p class="mb-0">Terminées</p>
+                    <h4 class="mb-0">${countTerminee}</h4>
+					<p class="mb-0">Terminées</p>
                 </div>
             </div>
         </div>
@@ -70,8 +71,8 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div>
-                    <h4 class="mb-0">3</h4>
-                    <p class="mb-0">Problèmes signalés</p>
+                    <h4 class="mb-0">${countAnnulee}</h4>
+					<p class="mb-0">Problèmes signalés</p>
                 </div>
             </div>
         </div>
@@ -153,15 +154,15 @@
                                             <div class="row g-2 small">
                                                 <div class="col-md-6">
                                                     <i class="fas fa-user text-primary me-1"></i>
-                                                    <strong>Client:</strong> ${intervention.reservation.client.nom} ${intervention.reservation.client.prenom}
+                                                    <strong>Client:</strong> ${fn:escapeXml(intervention.reservation.client.nom)} ${fn:escapeXml(intervention.reservation.client.prenom)}
                                                 </div>
                                                 <div class="col-md-6">
                                                     <i class="fas fa-user-tie text-success me-1"></i>
-                                                    <strong>Prestataire:</strong> ${intervention.prestataire.nom} ${intervention.prestataire.prenom}
+                                                    <strong>Prestataire:</strong> ${fn:escapeXml(intervention.prestataire.nom)} ${fn:escapeXml(intervention.prestataire.prenom)}
                                                 </div>
                                                 <div class="col-md-6">
                                                     <i class="fas fa-briefcase text-info me-1"></i>
-                                                    <strong>Service:</strong> ${intervention.reservation.service.nom}
+                                                    <strong>Service:</strong> ${fn:escapeXml(intervention.reservation.service.nom)}
                                                 </div>
                                                 <div class="col-md-6">
                                                     <i class="fas fa-receipt text-warning me-1"></i>

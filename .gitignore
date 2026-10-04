@@ -1,1 +1,7 @@
 /target/
+.env
+
+# Eclipse
+.classpath
+.project
+.settings/

@@ -1,5 +1,6 @@
 package com.app.service;
 
+import com.app.dao.AdminDAO;
 import com.app.dao.GenericDAO;
 import com.app.model.Admin;
 import com.app.utils.JpaUtil;
@@ -10,7 +11,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 public class AdminService {
-
+	private AdminDAO AdminDAO = new AdminDAO();
     private GenericDAO<Admin> dao = new GenericDAO<>(Admin.class);
 
     public void ajouter(Admin admin) throws ServiceException {
@@ -65,6 +66,13 @@ public class AdminService {
         } finally {
             em.close();
         }
+    }
+    public long compterTotal() {
+        return AdminDAO.countAll();
+    }
+
+    public long compterCeMois() {
+        return AdminDAO.countThisMonth();
     }
 
     

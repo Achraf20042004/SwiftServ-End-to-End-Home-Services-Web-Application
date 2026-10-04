@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Dashboard Prestataire" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -13,7 +14,7 @@
                     Espace Prestataire
                 </h1>
                 <p class="text-muted mb-0">
-                    Bienvenue, ${sessionScope.user.prenom} ${sessionScope.user.nom}
+                    Bienvenue, ${fn:escapeXml(sessionScope.user.prenom)} ${fn:escapeXml(sessionScope.user.nom)}
                 </p>
             </div>
             <div>
@@ -153,10 +154,10 @@
                                     <div class="flex-grow-1">
                                         <h6 class="mb-1">
                                             <i class="fas fa-wrench text-primary"></i>
-                                            ${r.service.nom}
+                                            ${fn:escapeXml(r.service.nom)}
                                         </h6>
                                         <p class="mb-1 text-muted">
-                                            <i class="fas fa-user"></i> ${r.client.prenom} ${r.client.nom}
+                                            <i class="fas fa-user"></i> ${fn:escapeXml(r.client.prenom)} ${fn:escapeXml(r.client.nom)}
                                         </p>
                                         <small class="text-muted">
                                             <i class="fas fa-clock"></i> Demandé le ${r.dateReservation}

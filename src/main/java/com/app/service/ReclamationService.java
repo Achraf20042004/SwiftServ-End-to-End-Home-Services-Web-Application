@@ -51,6 +51,20 @@ public class ReclamationService {
         }
     }
 
+    public List<Reclamation> listerParClient(int clientId) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            return em.createQuery(
+                    "SELECT r FROM Reclamation r WHERE r.client.id = :cid ORDER BY r.dateReclamation DESC",
+                    Reclamation.class)
+                     .setParameter("cid", clientId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors du listing des réclamations du client", e);
+        } finally { if (em != null) em.close(); }
+    }
+
     // --- Agrégation ---
     public long countByClient(int clientId) throws ServiceException {
         EntityManager em = null;

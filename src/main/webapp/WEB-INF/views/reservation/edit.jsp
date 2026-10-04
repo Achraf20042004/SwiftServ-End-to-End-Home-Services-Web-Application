@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Réservation" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/reservation?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${reservation.id}">
                     
                     <!-- Reservation Info -->
@@ -63,7 +65,7 @@
                         <select class="form-select-modern" id="clientId" name="clientId" required>
                             <c:forEach var="client" items="${clients}">
                                 <option value="${client.id}" ${reservation.client.id == client.id ? 'selected' : ''}>
-                                    ${client.nom} ${client.prenom} - ${client.email}
+                                    ${fn:escapeXml(client.nom)} ${fn:escapeXml(client.prenom)} - ${fn:escapeXml(client.email)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -81,7 +83,7 @@
                         <select class="form-select-modern" id="serviceId" name="serviceId" required>
                             <c:forEach var="service" items="${services}">
                                 <option value="${service.id}" ${reservation.service.id == service.id ? 'selected' : ''}>
-                                    ${service.nom} - ${service.prix}€
+                                    ${fn:escapeXml(service.nom)} - ${service.prix}€
                                 </option>
                             </c:forEach>
                         </select>
@@ -99,7 +101,7 @@
                         <select class="form-select-modern" id="prestataireId" name="prestataireId" required>
                             <c:forEach var="prestataire" items="${prestataires}">
                                 <option value="${prestataire.id}" ${reservation.prestataire.id == prestataire.id ? 'selected' : ''}>
-                                    ${prestataire.nom} ${prestataire.prenom} - ${prestataire.specialite}
+                                    ${fn:escapeXml(prestataire.nom)} ${fn:escapeXml(prestataire.prenom)} - ${fn:escapeXml(prestataire.specialite)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -165,7 +167,7 @@
                             <div>
                                 <h6 class="mb-1">Intervention #${reservation.intervention.id}</h6>
                                 <p class="text-muted small mb-0">
-                                    Statut: ${reservation.intervention.statut}
+                                    Statut: ${fn:escapeXml(reservation.intervention.statut)}
                                 </p>
                             </div>
                             <a href="${pageContext.request.contextPath}/intervention?action=edit&id=${reservation.intervention.id}" 

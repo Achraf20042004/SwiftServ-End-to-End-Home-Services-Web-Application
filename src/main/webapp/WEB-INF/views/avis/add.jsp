@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouvel Avis" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,25 +27,46 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/avis?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Client Selection -->
-                    <div class="mb-4">
-                        <h5 class="text-primary mb-3">
-                            <i class="fas fa-user me-2"></i> Client
-                        </h5>
-                        <hr>
-                        <label for="clientId" class="form-label-modern">
-                            <i class="fas fa-user-circle me-1"></i> Sélectionner le client *
-                        </label>
-                        <select class="form-select-modern" id="clientId" name="clientId" required>
-                            <option value="">Choisir un client</option>
-                            <c:forEach var="client" items="${clients}">
-                                <option value="${client.id}">
-                                    ${client.nom} ${client.prenom} - ${client.email}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
+                    <<!-- Client Selection -->
+<c:choose>
+    <c:when test="${clientConnecte != null}">
+        <!-- Client connecté - champ caché -->
+        <input type="hidden" name="clientId" value="${clientConnecte.id}">
+        <div class="mb-4">
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-user me-2"></i> Client
+            </h5>
+            <hr>
+            <div class="alert alert-light">
+                <i class="fas fa-user-circle me-2"></i>
+                <strong>${fn:escapeXml(clientConnecte.nom)} ${fn:escapeXml(clientConnecte.prenom)}</strong> - ${fn:escapeXml(clientConnecte.email)}
+            </div>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <!-- Admin - sélection du client -->
+        <div class="mb-4">
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-user me-2"></i> Client
+            </h5>
+            <hr>
+            <label for="clientId" class="form-label-modern">
+                <i class="fas fa-user-circle me-1"></i> Sélectionner le client *
+            </label>
+            <select class="form-select-modern" id="clientId" name="clientId" required>
+                <option value="">Choisir un client</option>
+                <c:forEach var="client" items="${clients}">
+                    <option value="${client.id}">
+                        ${fn:escapeXml(client.nom)} ${fn:escapeXml(client.prenom)} - ${fn:escapeXml(client.email)}
+                    </option>
+                </c:forEach>
+            </select>
+        </div>
+    </c:otherwise>
+</c:choose>
                     
                     <!-- Prestataire Selection -->
                     <div class="mb-4">
@@ -59,7 +81,7 @@
                             <option value="">Choisir un prestataire</option>
                             <c:forEach var="prestataire" items="${prestataires}">
                                 <option value="${prestataire.id}">
-                                    ${prestataire.nom} ${prestataire.prenom} - ${prestataire.specialite}
+                                    ${fn:escapeXml(prestataire.nom)} ${fn:escapeXml(prestataire.prenom)} - ${fn:escapeXml(prestataire.specialite)}
                                 </option>
                             </c:forEach>
                         </select>

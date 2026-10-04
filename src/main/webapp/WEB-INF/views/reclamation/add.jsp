@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouvelle Réclamation" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/reclamation?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Client Section -->
                     <div class="mb-4">
@@ -36,14 +38,23 @@
                         <label for="clientId" class="form-label-modern">
                             <i class="fas fa-user-circle me-1"></i> Sélectionner le client *
                         </label>
-                        <select class="form-select-modern" id="clientId" name="clientId" required>
-                            <option value="">Choisir un client</option>
-                            <c:forEach var="client" items="${clients}">
-                                <option value="${client.id}">
-                                    ${client.nom} ${client.prenom} - ${client.email}
-                                </option>
-                            </c:forEach>
-                        </select>
+                        <c:choose>
+                            <c:when test="${not empty clientConnecte}">
+                                <%-- Un client dépose la réclamation en son nom (imposé par la servlet) --%>
+                                <input type="text" class="form-control-modern" disabled
+                                       value="${fn:escapeXml(clientConnecte.nom)} ${fn:escapeXml(clientConnecte.prenom)} - ${fn:escapeXml(clientConnecte.email)}">
+                            </c:when>
+                            <c:otherwise>
+                                <select class="form-select-modern" id="clientId" name="clientId" required>
+                                    <option value="">Choisir un client</option>
+                                    <c:forEach var="client" items="${clients}">
+                                        <option value="${client.id}">
+                                            ${fn:escapeXml(client.nom)} ${fn:escapeXml(client.prenom)} - ${fn:escapeXml(client.email)}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     
                     <!-- Intervention Section -->
@@ -59,7 +70,7 @@
                             <option value="">Aucune intervention spécifique</option>
                             <c:forEach var="intervention" items="${interventions}">
                                 <option value="${intervention.id}">
-                                    #${intervention.id} - ${intervention.reservation.service.nom}
+                                    #${intervention.id} - ${fn:escapeXml(intervention.reservation.service.nom)}
                                 </option>
                             </c:forEach>
                         </select>

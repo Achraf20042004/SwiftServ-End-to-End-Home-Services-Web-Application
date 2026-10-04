@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Avis" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/avis?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${avis.id}">
                     
                     <!-- Avis Info -->
@@ -57,8 +59,8 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div>
-                                    <strong>${avis.client.nom} ${avis.client.prenom}</strong>
-                                    <br><small class="text-muted">${avis.client.email}</small>
+                                    <strong>${fn:escapeXml(avis.client.nom)} ${fn:escapeXml(avis.client.prenom)}</strong>
+                                    <br><small class="text-muted">${fn:escapeXml(avis.client.email)}</small>
                                 </div>
                             </div>
                         </div>
@@ -76,8 +78,8 @@
                                     <i class="fas fa-user-tie"></i>
                                 </div>
                                 <div>
-                                    <strong>${avis.prestataire.nom} ${avis.prestataire.prenom}</strong>
-                                    <br><small class="text-muted">${avis.prestataire.specialite}</small>
+                                    <strong>${fn:escapeXml(avis.prestataire.nom)} ${fn:escapeXml(avis.prestataire.prenom)}</strong>
+                                    <br><small class="text-muted">${fn:escapeXml(avis.prestataire.specialite)}</small>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +121,7 @@
                             <i class="fas fa-comment me-1"></i> Commentaire *
                         </label>
                         <textarea class="form-control-modern" id="commentaire" name="commentaire" 
-                                  rows="5" maxlength="500" required>${avis.commentaire}</textarea>
+                                  rows="5" maxlength="500" required>${fn:escapeXml(avis.commentaire)}</textarea>
                         <div class="d-flex justify-content-between">
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i> Minimum 20 caractères

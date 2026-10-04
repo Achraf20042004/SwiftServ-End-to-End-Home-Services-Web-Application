@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouveau Service" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/service?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <div class="mb-4">
                         <label for="nom" class="form-label-modern">
@@ -43,7 +45,7 @@
                             <select class="form-select-modern" id="categorie" name="categorie" required>
                                 <option value="">Sélectionner une catégorie</option>
                                 <c:forEach var="cat" items="${categories}">
-                                    <option value="${cat.id}">${cat.nom}</option>
+                                    <option value="${cat.id}">${fn:escapeXml(cat.nom)}</option>
                                 </c:forEach>
                             </select>
                             <small class="text-muted">

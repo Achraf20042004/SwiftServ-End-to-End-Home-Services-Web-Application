@@ -81,6 +81,7 @@
         </c:if>
         
         <form method="post" action="${pageContext.request.contextPath}/login">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
             <div class="mb-3">
                 <label for="email" class="form-label">
                     <i class="fas fa-envelope"></i> Email
@@ -132,10 +133,7 @@
         
         <!-- Comptes de test -->
         <div class="mt-4 p-3 bg-light rounded">
-            <small class="text-muted d-block mb-2"><strong>Comptes de test :</strong></small>
-            <small class="text-muted d-block">👨‍💼 Admin: admin@services.com / admin123</small>
-            <small class="text-muted d-block">👤 Client: jean.martin@email.com / client123</small>
-            <small class="text-muted d-block">🔧 Prestataire: thomas.lefebvre@prestataire.com / presta123</small>
+            
         </div>
     </div>
 </div>

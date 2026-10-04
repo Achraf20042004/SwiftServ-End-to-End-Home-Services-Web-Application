@@ -82,6 +82,7 @@
         </c:if>
         
         <form method="post" action="${pageContext.request.contextPath}/register" id="registerForm">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
             
             <!-- Sélection du rôle -->
             <div class="mb-4">

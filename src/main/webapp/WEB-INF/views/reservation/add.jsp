@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouvelle Réservation" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,25 +27,39 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/reservation?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Client Selection -->
-                    <div class="mb-4">
-                        <h5 class="text-primary mb-3">
-                            <i class="fas fa-user me-2"></i> Client
-                        </h5>
-                        <hr>
-                        <label for="clientId" class="form-label-modern">
-                            <i class="fas fa-user-circle me-1"></i> Sélectionner le client *
-                        </label>
-                        <select class="form-select-modern" id="clientId" name="clientId" required>
-                            <option value="">Choisir un client</option>
-                            <c:forEach var="client" items="${clients}">
-                                <option value="${client.id}">
-                                    ${client.nom} ${client.prenom} - ${client.email}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
+<div class="mb-4">
+    <h5 class="text-primary mb-3">
+        <i class="fas fa-user me-2"></i> Client
+    </h5>
+    <hr>
+    <label for="clientId" class="form-label-modern">
+        <i class="fas fa-user-circle me-1"></i> Client *
+    </label>
+    
+    <c:choose>
+        <c:when test="${not empty clientConnecte}">
+            <!-- Client connecté : champ en lecture seule -->
+            <input type="hidden" name="clientId" value="${clientConnecte.id}">
+            <input type="text" class="form-control-modern" 
+                   value="${fn:escapeXml(clientConnecte.nom)} ${fn:escapeXml(clientConnecte.prenom)} - ${fn:escapeXml(clientConnecte.email)}" 
+                   readonly disabled>
+        </c:when>
+        <c:otherwise>
+            <!-- Admin : liste déroulante -->
+            <select class="form-select-modern" id="clientId" name="clientId" required>
+                <option value="">Choisir un client</option>
+                <c:forEach var="client" items="${clients}">
+                    <option value="${client.id}">
+                        ${fn:escapeXml(client.nom)} ${fn:escapeXml(client.prenom)} - ${fn:escapeXml(client.email)}
+                    </option>
+                </c:forEach>
+            </select>
+        </c:otherwise>
+    </c:choose>
+</div>
                     
                     <!-- Service Selection -->
                     <div class="mb-4">
@@ -59,7 +74,7 @@
                             <option value="">Choisir un service</option>
                             <c:forEach var="service" items="${services}">
                                 <option value="${service.id}" data-prix="${service.prix}">
-                                    ${service.nom} - ${service.prix}€
+                                    ${fn:escapeXml(service.nom)} - ${service.prix}€
                                 </option>
                             </c:forEach>
                         </select>
@@ -78,7 +93,7 @@
                             <option value="">Choisir un prestataire</option>
                             <c:forEach var="prestataire" items="${prestataires}">
                                 <option value="${prestataire.id}">
-                                    ${prestataire.nom} ${prestataire.prenom} - ${prestataire.specialite}
+                                    ${fn:escapeXml(prestataire.nom)} ${fn:escapeXml(prestataire.prenom)} - ${fn:escapeXml(prestataire.specialite)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -145,10 +160,17 @@
 
 <script>
     // Update summary on selection change
+    <c:if test="${empty clientConnecte}">
     document.getElementById('clientId').addEventListener('change', function(e) {
         const text = e.target.options[e.target.selectedIndex].text;
         document.getElementById('summary-client').textContent = text || '-';
     });
+    </c:if>
+    
+    <c:if test="${not empty clientConnecte}">
+    // Pré-remplir le résumé pour le client connecté
+    document.getElementById('summary-client').textContent = '${fn:escapeXml(clientConnecte.nom)} ${fn:escapeXml(clientConnecte.prenom)}';
+    </c:if>
     
     document.getElementById('serviceId').addEventListener('change', function(e) {
         const text = e.target.options[e.target.selectedIndex].text;

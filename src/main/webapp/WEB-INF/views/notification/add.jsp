@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouvelle Notification" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/notification?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Recipients Section -->
                     <div class="mb-4">
@@ -43,50 +45,33 @@
                                 <label for="type-single" class="recipient-type-card">
                                     <i class="fas fa-user fa-2x mb-2"></i>
                                     <strong>Individuel</strong>
-                                    <small class="text-muted">Un seul utilisateur</small>
+                                    <small class="text-muted">Un seul client</small>
                                 </label>
                                 
-                                <input type="radio" id="type-role" name="recipientType" value="role">
-                                <label for="type-role" class="recipient-type-card">
-                                    <i class="fas fa-user-tag fa-2x mb-2"></i>
-                                    <strong>Par rôle</strong>
-                                    <small class="text-muted">Tous les utilisateurs d'un rôle</small>
-                                </label>
                                 
                                 <input type="radio" id="type-all" name="recipientType" value="all">
                                 <label for="type-all" class="recipient-type-card">
                                     <i class="fas fa-users fa-2x mb-2"></i>
                                     <strong>Tous</strong>
-                                    <small class="text-muted">Tous les utilisateurs</small>
+                                    <small class="text-muted">Tous les clients</small>
                                 </label>
                             </div>
                         </div>
                         
                         <div id="single-recipient" class="recipient-selector">
                             <label for="userId" class="form-label-modern">
-                                <i class="fas fa-user-circle me-1"></i> Sélectionner l'utilisateur
+                                <i class="fas fa-user-circle me-1"></i> Sélectionner le client
                             </label>
                             <select class="form-select-modern" id="userId" name="userId">
-                                <option value="">Choisir un utilisateur</option>
-                                <c:forEach var="user" items="${users}">
+                                <option value="">Choisir un client</option>
+                                <c:forEach var="user" items="${clients}">
                                     <option value="${user.id}">
-                                        ${user.nom} ${user.prenom} (${user.role})
+                                        ${fn:escapeXml(user.nom)} ${fn:escapeXml(user.prenom)} (${fn:escapeXml(user.email)})
                                     </option>
                                 </c:forEach>
                             </select>
                         </div>
                         
-                        <div id="role-recipient" class="recipient-selector" style="display:none;">
-                            <label for="role" class="form-label-modern">
-                                <i class="fas fa-user-tag me-1"></i> Sélectionner le rôle
-                            </label>
-                            <select class="form-select-modern" id="role" name="role">
-                                <option value="">Choisir un rôle</option>
-                                <option value="CLIENT">Clients</option>
-                                <option value="PRESTATAIRE">Prestataires</option>
-                                <option value="ADMIN">Administrateurs</option>
-                            </select>
-                        </div>
                     </div>
                     
                     <!-- Notification Details -->
@@ -115,7 +100,7 @@
                                 <i class="fas fa-heading me-1"></i> Titre *
                             </label>
                             <input type="text" class="form-control-modern" id="titre" name="titre" 
-                                   placeholder="Titre de la notification" maxlength="100" required>
+                                   placeholder="Titre de la notification" maxlength="45" required>
                         </div>
                         
                         <div class="mb-3">
@@ -124,10 +109,10 @@
                             </label>
                             <textarea class="form-control-modern" id="message" name="message" 
                                       rows="4" placeholder="Contenu de la notification..." 
-                                      maxlength="500" required></textarea>
+                                      maxlength="250" required></textarea>
                             <div class="d-flex justify-content-end">
                                 <small class="text-muted">
-                                    <span id="char-count">0</span>/500 caractères
+                                    <span id="char-count">0</span>/250 caractères
                                 </small>
                             </div>
                         </div>
@@ -172,7 +157,7 @@
 <style>
     .recipient-type-selector {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
     
@@ -282,12 +267,9 @@
     document.querySelectorAll('input[name="recipientType"]').forEach(function(input) {
         input.addEventListener('change', function() {
             document.getElementById('single-recipient').style.display = 'none';
-            document.getElementById('role-recipient').style.display = 'none';
             
             if (this.value === 'single') {
                 document.getElementById('single-recipient').style.display = 'block';
-            } else if (this.value === 'role') {
-                document.getElementById('role-recipient').style.display = 'block';
             }
         });
     });

@@ -7,6 +7,7 @@ import com.app.service.AdminService;
 import com.app.service.ClientService;
 import com.app.service.PrestataireService;
 import com.app.service.ServiceException;
+import com.app.utils.PasswordUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,12 +15,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
+    private static final int MIN_PASSWORD_LENGTH = 8;
 
     private AdminService adminService = new AdminService();
     private ClientService clientService = new ClientService();
@@ -30,28 +32,18 @@ public class ProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
         String role = (String) session.getAttribute("role");
-        Object user = session.getAttribute("user");
+        request.setAttribute("user", session.getAttribute("user"));
 
-        request.setAttribute("user", user);
-
-        switch (role.toLowerCase()) {
+        switch (role) {
             case "admin":
                 request.getRequestDispatcher("/WEB-INF/views/admin/profile.jsp").forward(request, response);
                 break;
             case "client":
                 request.getRequestDispatcher("/WEB-INF/views/client/profile.jsp").forward(request, response);
                 break;
-            case "prestataire":
-                request.getRequestDispatcher("/WEB-INF/views/prestataire/profile.jsp").forward(request, response);
-                break;
             default:
-                response.sendRedirect("login");
+                request.getRequestDispatcher("/WEB-INF/views/prestataire/profile.jsp").forward(request, response);
                 break;
         }
     }
@@ -61,33 +53,30 @@ public class ProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        request.setCharacterEncoding("UTF-8");
-
         String role = (String) session.getAttribute("role");
         Object user = session.getAttribute("user");
 
+        String newPassword = request.getParameter("newPassword");
+        boolean changePassword = newPassword != null && !newPassword.isEmpty();
+        if (changePassword && newPassword.length() < MIN_PASSWORD_LENGTH) {
+            request.setAttribute("error", "Le nouveau mot de passe doit contenir au moins " + MIN_PASSWORD_LENGTH + " caractères.");
+            doGet(request, response);
+            return;
+        }
+
         try {
-            switch (role.toLowerCase()) {
+            switch (role) {
                 case "admin":
                     Admin admin = (Admin) user;
                     admin.setNom(request.getParameter("nom"));
                     admin.setPrenom(request.getParameter("prenom"));
                     admin.setEmail(request.getParameter("email"));
                     admin.setTelephone(request.getParameter("telephone"));
-                    
-                    String newPassword = request.getParameter("newPassword");
-                    if (newPassword != null && !newPassword.isEmpty()) {
-                        admin.setMotDePasse(newPassword);
+                    if (changePassword) {
+                        admin.setMotDePasse(PasswordUtil.hash(newPassword));
                     }
-                    
                     adminService.modifier(admin);
                     session.setAttribute("user", admin);
-                    request.setAttribute("success", "Profil mis à jour avec succès !");
                     break;
 
                 case "client":
@@ -99,18 +88,14 @@ public class ProfileServlet extends HttpServlet {
                     client.setAdresse(request.getParameter("adresse"));
                     client.setVille(request.getParameter("ville"));
                     client.setCodePostal(request.getParameter("codePostal"));
-                    
-                    String clientNewPassword = request.getParameter("newPassword");
-                    if (clientNewPassword != null && !clientNewPassword.isEmpty()) {
-                        client.setMotDePasse(clientNewPassword);
+                    if (changePassword) {
+                        client.setMotDePasse(PasswordUtil.hash(newPassword));
                     }
-                    
                     clientService.modifier(client);
                     session.setAttribute("user", client);
-                    request.setAttribute("success", "Profil mis à jour avec succès !");
                     break;
 
-                case "prestataire":
+                default:
                     Prestataire prestataire = (Prestataire) user;
                     prestataire.setNom(request.getParameter("nom"));
                     prestataire.setPrenom(request.getParameter("prenom"));
@@ -118,23 +103,17 @@ public class ProfileServlet extends HttpServlet {
                     prestataire.setTelephone(request.getParameter("telephone"));
                     prestataire.setSpecialite(request.getParameter("specialite"));
                     prestataire.setDisponibilite(request.getParameter("disponibilite"));
-                    
-                    String prestataireNewPassword = request.getParameter("newPassword");
-                    if (prestataireNewPassword != null && !prestataireNewPassword.isEmpty()) {
-                        prestataire.setMotDePasse(prestataireNewPassword);
+                    if (changePassword) {
+                        prestataire.setMotDePasse(PasswordUtil.hash(newPassword));
                     }
-                    
                     prestataireService.modifier(prestataire);
                     session.setAttribute("user", prestataire);
-                    request.setAttribute("success", "Profil mis à jour avec succès !");
                     break;
             }
-
-            doGet(request, response);
-
+            request.setAttribute("success", "Profil mis à jour avec succès !");
         } catch (ServiceException e) {
             request.setAttribute("error", "Erreur lors de la mise à jour du profil");
-            doGet(request, response);
         }
+        doGet(request, response);
     }
 }

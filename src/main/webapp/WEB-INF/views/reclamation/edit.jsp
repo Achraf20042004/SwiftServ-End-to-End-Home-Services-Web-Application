@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Réclamation" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/reclamation?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${reclamation.id}">
                     
                     <!-- Réclamation Info -->
@@ -69,8 +71,8 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div>
-                                    <strong>${reclamation.client.nom} ${reclamation.client.prenom}</strong>
-                                    <br><small class="text-muted">${reclamation.client.email}</small>
+                                    <strong>${fn:escapeXml(reclamation.client.nom)} ${fn:escapeXml(reclamation.client.prenom)}</strong>
+                                    <br><small class="text-muted">${fn:escapeXml(reclamation.client.email)}</small>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +123,7 @@
                                 <i class="fas fa-align-left me-1"></i> Description détaillée *
                             </label>
                             <textarea class="form-control-modern" id="description" name="description" 
-                                      rows="6" maxlength="1000" required>${reclamation.description}</textarea>
+                                      rows="6" maxlength="1000" required>${fn:escapeXml(reclamation.description)}</textarea>
                             <div class="d-flex justify-content-end">
                                 <small class="text-muted">
                                     <span id="char-count">${reclamation.description.length()}</span>/1000 caractères

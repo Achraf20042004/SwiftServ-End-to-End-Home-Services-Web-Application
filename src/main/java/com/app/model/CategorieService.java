@@ -20,7 +20,6 @@ public class CategorieService {
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceDomicile> services;
 
-    // Getters et setters
 
     public int getId() {
         return id;

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Client" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/client?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${client.id}">
                     
                     <!-- Client Info Summary -->
@@ -57,7 +59,7 @@
                                 <i class="fas fa-user me-1"></i> Nom *
                             </label>
                             <input type="text" class="form-control-modern" id="nom" name="nom" 
-                                   value="${client.nom}" required>
+                                   value="${fn:escapeXml(client.nom)}" required>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -65,7 +67,7 @@
                                 <i class="fas fa-user me-1"></i> Prénom *
                             </label>
                             <input type="text" class="form-control-modern" id="prenom" name="prenom" 
-                                   value="${client.prenom}" required>
+                                   value="${fn:escapeXml(client.prenom)}" required>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -73,7 +75,7 @@
                                 <i class="fas fa-envelope me-1"></i> Email *
                             </label>
                             <input type="email" class="form-control-modern" id="email" name="email" 
-                                   value="${client.email}" required>
+                                   value="${fn:escapeXml(client.email)}" required>
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i> L'email ne peut pas être modifié après création
                             </small>
@@ -84,7 +86,7 @@
                                 <i class="fas fa-phone me-1"></i> Téléphone *
                             </label>
                             <input type="tel" class="form-control-modern" id="telephone" name="telephone" 
-                                   value="${client.telephone}" required>
+                                   value="${fn:escapeXml(client.telephone)}" required>
                         </div>
                     </div>
                     
@@ -102,7 +104,7 @@
                                 <i class="fas fa-home me-1"></i> Adresse complète
                             </label>
                             <textarea class="form-control-modern" id="adresse" name="adresse" 
-                                      rows="2">${client.adresse}</textarea>
+                                      rows="2">${fn:escapeXml(client.adresse)}</textarea>
                         </div>
                         
                         <div class="col-md-8 mb-3">
@@ -110,7 +112,7 @@
                                 <i class="fas fa-city me-1"></i> Ville
                             </label>
                             <input type="text" class="form-control-modern" id="ville" name="ville" 
-                                   value="${client.ville}">
+                                   value="${fn:escapeXml(client.ville)}">
                         </div>
                         
                         <div class="col-md-4 mb-3">
@@ -118,7 +120,7 @@
                                 <i class="fas fa-mail-bulk me-1"></i> Code postal
                             </label>
                             <input type="text" class="form-control-modern" id="codePostal" name="codePostal" 
-                                   value="${client.codePostal}" pattern="[0-9]{5}">
+                                   value="${fn:escapeXml(client.codePostal)}" pattern="[0-9]{5}">
                         </div>
                     </div>
                     

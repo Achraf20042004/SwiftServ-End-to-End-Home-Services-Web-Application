@@ -3,19 +3,20 @@ package com.app.controller;
 import com.app.model.Admin;
 import com.app.service.AdminService;
 import com.app.service.ServiceException;
+import com.app.utils.PasswordUtil;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.util.List;
 
+/** Gestion des administrateurs (réservée aux administrateurs, voir AuthFilter). */
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private AdminService adminService = new AdminService();
 
     @Override
@@ -27,34 +28,23 @@ public class AdminServlet extends HttpServlet {
 
         try {
             switch (action) {
-
                 case "add":
-                    request.getRequestDispatcher("/WEB-INF/views/admin/add.jsp")
-                           .forward(request, response);
+                    request.getRequestDispatcher("/WEB-INF/views/admin/add.jsp").forward(request, response);
                     break;
 
                 case "edit":
-                    int idEdit = Integer.parseInt(request.getParameter("id"));
-                    Admin admin = adminService.trouver(idEdit);
-                    request.setAttribute("admin", admin);
-                    request.getRequestDispatcher("/WEB-INF/views/admin/edit.jsp")
-                           .forward(request, response);
+                    request.setAttribute("admin", adminService.trouver(Integer.parseInt(request.getParameter("id"))));
+                    request.getRequestDispatcher("/WEB-INF/views/admin/edit.jsp").forward(request, response);
                     break;
 
-                case "delete":
-                    int idDelete = Integer.parseInt(request.getParameter("id"));
-                    adminService.supprimer(idDelete);
-                    response.sendRedirect("admin?action=list");
-                    break;
-
-                default: // LIST
-                    List<Admin> liste = adminService.lister();
-                    request.setAttribute("admins", liste);
-                    request.getRequestDispatcher("/WEB-INF/views/admin/list.jsp")
-                           .forward(request, response);
+                default:
+                    request.setAttribute("admins", adminService.lister());
+                    request.setAttribute("totalAdmins", adminService.compterTotal());
+                    request.setAttribute("adminsActifs", adminService.compterTotal());
+                    request.setAttribute("adminsCeMois", adminService.compterCeMois());
+                    request.getRequestDispatcher("/WEB-INF/views/admin/list.jsp").forward(request, response);
                     break;
             }
-
         } catch (ServiceException e) {
             throw new ServletException(e);
         }
@@ -64,38 +54,36 @@ public class AdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
         try {
             if ("add".equals(action)) {
-
                 Admin admin = new Admin();
                 admin.setNom(request.getParameter("nom"));
                 admin.setPrenom(request.getParameter("prenom"));
                 admin.setEmail(request.getParameter("email"));
-                admin.setMotDePasse(request.getParameter("motDePasse"));
+                admin.setMotDePasse(PasswordUtil.hash(request.getParameter("motDePasse")));
                 admin.setTelephone(request.getParameter("telephone"));
                 admin.setRole("ADMIN");
-
                 adminService.ajouter(admin);
-                response.sendRedirect("admin?action=list");
             }
-
             else if ("edit".equals(action)) {
-
-                int id = Integer.parseInt(request.getParameter("id"));
-                Admin admin = adminService.trouver(id);
-
+                Admin admin = adminService.trouver(Integer.parseInt(request.getParameter("id")));
                 admin.setNom(request.getParameter("nom"));
                 admin.setPrenom(request.getParameter("prenom"));
                 admin.setEmail(request.getParameter("email"));
                 admin.setTelephone(request.getParameter("telephone"));
-
                 adminService.modifier(admin);
-                response.sendRedirect("admin?action=list");
             }
-
+            else if ("delete".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Admin connecte = (Admin) request.getSession().getAttribute("user");
+                // Un administrateur ne peut pas supprimer son propre compte
+                if (connecte.getId() != id) {
+                    adminService.supprimer(id);
+                }
+            }
+            response.sendRedirect("admin?action=list");
         } catch (ServiceException e) {
             throw new ServletException(e);
         }

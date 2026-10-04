@@ -20,6 +20,7 @@
                 </div>
                 <div class="card-body-custom">
                     <form method="post" action="${pageContext.request.contextPath}/categorie">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                         <input type="hidden" name="action" value="add">
 
                         <div class="mb-4">

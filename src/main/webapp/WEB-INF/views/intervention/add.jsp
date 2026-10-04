@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Nouvelle Intervention" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/intervention?action=add" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     
                     <!-- Step Indicator -->
                     <div class="steps-indicator mb-4">
@@ -35,11 +37,11 @@
                         </div>
                         <div class="step">
                             <div class="step-number">2</div>
-                            <div class="step-label">Prestataire</div>
+                            <div class="step-label">Planification</div>
                         </div>
                         <div class="step">
                             <div class="step-number">3</div>
-                            <div class="step-label">Planification</div>
+                            <div class="step-label">Confirmation</div>
                         </div>
                     </div>
                     
@@ -56,38 +58,27 @@
                             <option value="">Choisir une réservation confirmée</option>
                             <c:forEach var="reservation" items="${reservations}">
                                 <option value="${reservation.id}" 
-                                        data-client="${reservation.client.nom} ${reservation.client.prenom}"
-                                        data-service="${reservation.service.nom}"
-                                        data-prestataire-id="${reservation.prestataire.id}">
-                                    #${reservation.id} - ${reservation.client.nom} ${reservation.client.prenom} - ${reservation.service.nom}
+                                        data-client="${fn:escapeXml(reservation.client.nom)} ${fn:escapeXml(reservation.client.prenom)}"
+                                        data-service="${fn:escapeXml(reservation.service.nom)}">
+                                    #${reservation.id} - ${fn:escapeXml(reservation.client.nom)} ${fn:escapeXml(reservation.client.prenom)} - ${fn:escapeXml(reservation.service.nom)}
                                 </option>
                             </c:forEach>
                         </select>
                         <small class="text-muted">
-                            <i class="fas fa-info-circle me-1"></i> Seules les réservations confirmées sont affichées
+                            <i class="fas fa-info-circle me-1"></i> Seules les réservations qui vous sont assignées sont affichées
                         </small>
                     </div>
                     
-                    <!-- Prestataire Selection -->
+                    <!-- Date d'intervention -->
                     <div class="mb-4">
                         <h5 class="text-primary mb-3">
-                            <i class="fas fa-user-tie me-2"></i> Prestataire assigné
+                            <i class="fas fa-clock me-2"></i> Date et heure
                         </h5>
                         <hr>
-                        <label for="prestataire_id" class="form-label-modern">
-                            <i class="fas fa-user-check me-1"></i> Sélectionner le prestataire *
+                        <label for="dateIntervention" class="form-label-modern">
+                            <i class="fas fa-calendar-alt me-1"></i> Date d'intervention *
                         </label>
-                        <select class="form-select-modern" id="prestataire_id" name="prestataire_id" required>
-                            <option value="">Choisir un prestataire disponible</option>
-                            <c:forEach var="prestataire" items="${prestataires}">
-                                <option value="${prestataire.id}">
-                                    ${prestataire.nom} ${prestataire.prenom} - ${prestataire.specialite}
-                                    <c:if test="${prestataire.disponibilite == 'disponible'}">
-                                        ✓ Disponible
-                                    </c:if>
-                                </option>
-                            </c:forEach>
-                        </select>
+                        <input type="datetime-local" class="form-select-modern" id="dateIntervention" name="dateIntervention" required>
                     </div>
                     
                     <!-- Status Selection -->
@@ -96,7 +87,7 @@
                             <i class="fas fa-flag me-2"></i> État de l'intervention
                         </h5>
                         <hr>
-                        <label for="statut" class="form-label-modern">
+                        <label class="form-label-modern">
                             <i class="fas fa-traffic-light me-1"></i> Statut initial *
                         </label>
                         <div class="status-selector">
@@ -125,7 +116,7 @@
                     </div>
                     
                     <!-- Summary Preview -->
-                    <div class="alert" style="background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); border: none;">
+                    <div class="alert mb-4" style="background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); border: none; border-radius: 0.75rem;">
                         <h6 class="text-primary mb-3">
                             <i class="fas fa-clipboard-check me-2"></i> Récapitulatif de l'intervention
                         </h6>
@@ -148,7 +139,7 @@
                                 <i class="fas fa-user-tie text-success"></i>
                                 <div>
                                     <small class="text-muted">Prestataire</small>
-                                    <p class="mb-0" id="preview-prestataire">-</p>
+                                    <p class="mb-0">${fn:escapeXml(prestataireConnecte.nom)} ${fn:escapeXml(prestataireConnecte.prenom)}</p>
                                 </div>
                             </div>
                             <div class="summary-item">
@@ -171,6 +162,7 @@
                             <i class="fas fa-calendar-check me-2"></i> Planifier l'intervention
                         </button>
                     </div>
+                   
                 </form>
             </div>
         </div>
@@ -314,19 +306,6 @@
         const option = e.target.options[e.target.selectedIndex];
         document.getElementById('preview-client').textContent = option.dataset.client || '-';
         document.getElementById('preview-service').textContent = option.dataset.service || '-';
-        
-        // Auto-select prestataire if available
-        const prestataireId = option.dataset.prestataireId;
-        if (prestataireId) {
-            document.getElementById('prestataire_id').value = prestataireId;
-            const prestataireOption = document.getElementById('prestataire_id').options[document.getElementById('prestataire_id').selectedIndex];
-            document.getElementById('preview-prestataire').textContent = prestataireOption.text.split(' - ')[0] || '-';
-        }
-    });
-    
-    document.getElementById('prestataire_id').addEventListener('change', function(e) {
-        const text = e.target.options[e.target.selectedIndex].text.split(' - ')[0];
-        document.getElementById('preview-prestataire').textContent = text || '-';
     });
     
     document.querySelectorAll('input[name="statut"]').forEach(function(radio) {

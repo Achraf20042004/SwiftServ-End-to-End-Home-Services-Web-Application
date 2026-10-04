@@ -24,7 +24,7 @@ public class Avis {
     @JoinColumn(name = "prestataire_id", nullable = false)
     private Prestataire prestataire;
 
-    // Getters et Setters
+
 
     public int getId() {
         return id;

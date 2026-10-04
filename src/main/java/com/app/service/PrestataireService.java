@@ -79,6 +79,22 @@ public class PrestataireService {
             if (em != null) em.close();
         }
     }
+    
+    public List<Prestataire> listerParClient(int clientId) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            return em.createQuery(
+                "SELECT DISTINCT p FROM Prestataire p " +
+                "JOIN Reservation r ON r.prestataire.id = p.id " +
+                "WHERE r.client.id = :cid AND r.statut = 'TERMINEE'", 
+                Prestataire.class)
+                     .setParameter("cid", clientId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la récupération des prestataires du client", e);
+        } finally { if (em != null) em.close(); }
+    }
 
 
 }

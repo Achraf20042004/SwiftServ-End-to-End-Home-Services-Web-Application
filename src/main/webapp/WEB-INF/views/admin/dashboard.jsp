@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Dashboard Administrateur" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -13,7 +14,7 @@
                     Dashboard Administrateur
                 </h1>
                 <p class="text-muted mb-0">
-                    Bienvenue, ${sessionScope.user.prenom} ${sessionScope.user.nom}
+                    Bienvenue, ${fn:escapeXml(sessionScope.user.prenom)} ${fn:escapeXml(sessionScope.user.nom)}
                 </p>
             </div>
             <div>

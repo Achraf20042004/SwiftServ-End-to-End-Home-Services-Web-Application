@@ -18,6 +18,14 @@ public class Reclamation {
     @Column(nullable = false)
     private Date dateReclamation = new Date();
 
+ // Dans com.app.model.Reclamation
+    @Column(length = 20)
+    private String statut = "EN_ATTENTE"; // Valeur par défaut
+
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
+    
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;

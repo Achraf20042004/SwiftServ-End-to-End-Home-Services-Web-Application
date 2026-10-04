@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Administrateurs" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -23,13 +24,14 @@
 </div>
 
 <!-- Stats Cards -->
+<!-- Stats Cards -->
 <div class="row g-4 mb-4 fade-in">
     <div class="col-lg-3 col-md-6">
         <div class="stat-card">
             <div class="stat-icon bg-primary">
                 <i class="fas fa-user-shield"></i>
             </div>
-            <div class="stat-value">${admins.size()}</div>
+            <div class="stat-value">${totalAdmins}</div>
             <div class="stat-label">Total admins</div>
         </div>
     </div>
@@ -38,7 +40,7 @@
             <div class="stat-icon bg-success">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <div class="stat-value">5</div>
+            <div class="stat-value">${adminsActifs}</div>
             <div class="stat-label">Actifs</div>
         </div>
     </div>
@@ -47,7 +49,7 @@
             <div class="stat-icon bg-warning">
                 <i class="fas fa-crown"></i>
             </div>
-            <div class="stat-value">2</div>
+            <div class="stat-value">1</div>
             <div class="stat-label">Super admins</div>
         </div>
     </div>
@@ -56,7 +58,7 @@
             <div class="stat-icon bg-info">
                 <i class="fas fa-user-plus"></i>
             </div>
-            <div class="stat-value">1</div>
+            <div class="stat-value">${adminsCeMois}</div>
             <div class="stat-label">Ce mois</div>
         </div>
     </div>
@@ -101,12 +103,8 @@
                                                 <i class="fas fa-user-shield"></i>
                                             </div>
                                             <div>
-                                                <strong>${admin.nom} ${admin.prenom}</strong>
-                                                <c:if test="${admin.superAdmin}">
-                                                    <span class="ms-2">
-                                                        <i class="fas fa-crown text-warning" title="Super Admin"></i>
-                                                    </span>
-                                                </c:if>
+                                                <strong>${fn:escapeXml(admin.nom)} ${fn:escapeXml(admin.prenom)}</strong>
+                                                <%-- superAdmin non disponible --%>
                                                 <br>
                                                 <small class="text-muted">
                                                     <i class="fas fa-calendar me-1"></i>
@@ -118,26 +116,17 @@
                                     <td>
                                         <div>
                                             <i class="fas fa-envelope text-muted me-1"></i>
-                                            <small>${admin.email}</small>
+                                            <small>${fn:escapeXml(admin.email)}</small>
                                         </div>
                                         <div>
                                             <i class="fas fa-phone text-muted me-1"></i>
-                                            <small>${admin.telephone}</small>
+                                            <small>${fn:escapeXml(admin.telephone)}</small>
                                         </div>
                                     </td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${admin.superAdmin}">
-                                                <span class="badge-custom badge-warning-custom">
-                                                    <i class="fas fa-crown me-1"></i> Super Admin
-                                                </span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="badge-custom badge-primary-custom">
-                                                    <i class="fas fa-user-shield me-1"></i> Admin
-                                                </span>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <span class="badge-custom badge-primary-custom">
+										    <i class="fas fa-user-shield me-1"></i> Admin
+										</span>
                                     </td>
                                     <td>
                                         <small class="text-muted">
@@ -160,7 +149,7 @@
                                                     title="Permissions" data-bs-toggle="modal" data-bs-target="#permissionsModal">
                                                 <i class="fas fa-key"></i>
                                             </button>
-                                            <c:if test="${!admin.superAdmin}">
+                                            <c:if test="${true}">
                                                 <a href="${pageContext.request.contextPath}/admin?action=delete&id=${admin.id}" 
                                                    class="btn btn-action btn-danger-custom btn-delete-confirm" 
                                                    title="Supprimer">

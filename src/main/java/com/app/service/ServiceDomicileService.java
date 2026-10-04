@@ -1,10 +1,17 @@
 package com.app.service;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.app.utils.JpaUtil;
+import jakarta.persistence.EntityManager;
 import com.app.dao.GenericDAO;
 import com.app.model.ServiceDomicile;
 import java.util.List;
 
 public class ServiceDomicileService {
+
+    private static final Logger LOGGER = Logger.getLogger(ServiceDomicileService.class.getName());
 
     private GenericDAO<ServiceDomicile> dao = new GenericDAO<>(ServiceDomicile.class);
 
@@ -45,6 +52,24 @@ public class ServiceDomicileService {
             dao.delete(id);
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la suppression du service à domicile", e);
+        }
+    }
+
+    public List<ServiceDomicile> listerPopulaires(int limit) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            List<ServiceDomicile> services = em.createQuery(
+                "SELECT s FROM ServiceDomicile s LEFT JOIN FETCH s.categorie ORDER BY s.id ASC", 
+                ServiceDomicile.class)
+                .setMaxResults(limit)
+                .getResultList();
+            return services;
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, e.getMessage(), e);
+            throw new ServiceException("Erreur lors de la récupération des services populaires", e);
+        } finally { 
+            if (em != null) em.close(); 
         }
     }
 }

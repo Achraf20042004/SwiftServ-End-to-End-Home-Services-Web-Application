@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Modifier Administrateur" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -26,6 +27,7 @@
             </div>
             <div class="card-body-custom">
                 <form action="${pageContext.request.contextPath}/admin?action=edit" method="post">
+<input type="hidden" name="_csrf" value="${sessionScope._csrf}">
                     <input type="hidden" name="id" value="${admin.id}">
                     
                     <!-- Admin Info -->
@@ -37,11 +39,6 @@
                                     Inscrit le: <c:out value="${admin.dateInscription}" default="-"/>
                                 </p>
                             </div>
-                            <c:if test="${admin.superAdmin}">
-                                <span class="badge-custom badge-warning-custom">
-                                    <i class="fas fa-crown me-1"></i> Super Admin
-                                </span>
-                            </c:if>
                         </div>
                     </div>
                     
@@ -58,7 +55,7 @@
                                     <i class="fas fa-user me-1"></i> Nom *
                                 </label>
                                 <input type="text" class="form-control-modern" id="nom" name="nom" 
-                                       value="${admin.nom}" required>
+                                       value="${fn:escapeXml(admin.nom)}" required>
                             </div>
                             
                             <div class="col-md-6 mb-3">
@@ -66,7 +63,7 @@
                                     <i class="fas fa-user me-1"></i> Prénom *
                                 </label>
                                 <input type="text" class="form-control-modern" id="prenom" name="prenom" 
-                                       value="${admin.prenom}" required>
+                                       value="${fn:escapeXml(admin.prenom)}" required>
                             </div>
                         </div>
                         
@@ -76,7 +73,7 @@
                                     <i class="fas fa-envelope me-1"></i> Email *
                                 </label>
                                 <input type="email" class="form-control-modern" id="email" name="email" 
-                                       value="${admin.email}" required>
+                                       value="${fn:escapeXml(admin.email)}" required>
                                 <small class="text-muted">
                                     <i class="fas fa-lock me-1"></i> L'email ne peut pas être modifié
                                 </small>
@@ -87,7 +84,7 @@
                                     <i class="fas fa-phone me-1"></i> Téléphone *
                                 </label>
                                 <input type="tel" class="form-control-modern" id="telephone" name="telephone" 
-                                       value="${admin.telephone}" required>
+                                       value="${fn:escapeXml(admin.telephone)}" required>
                             </div>
                         </div>
                     </div>
@@ -123,37 +120,16 @@
                         </div>
                     </div>
                     
-                    <!-- Access Level -->
-                    <c:if test="${sessionScope.user.superAdmin && !admin.superAdmin}">
-                        <div class="mb-4">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-shield-alt me-2"></i> Niveau d'accès
-                            </h5>
-                            <hr>
-                            
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="makeSuperAdmin" name="makeSuperAdmin">
-                                <label class="form-check-label" for="makeSuperAdmin">
-                                    <i class="fas fa-crown text-warning me-1"></i>
-                                    <strong>Promouvoir au rang de Super Admin</strong>
-                                </label>
-                            </div>
-                            <small class="text-muted">
-                                <i class="fas fa-exclamation-triangle me-1"></i>
-                                Cette action donnera un accès complet au système
-                            </small>
-                        </div>
-                    </c:if>
                     
                     <!-- Actions -->
                     <div class="d-flex gap-2 justify-content-between">
-                        <c:if test="${!admin.superAdmin}">
+                        <c:if test="${admin.id != sessionScope.user.id}">
                             <a href="${pageContext.request.contextPath}/admin?action=delete&id=${admin.id}" 
                                class="btn btn-danger-custom btn-delete-confirm">
                                 <i class="fas fa-trash me-2"></i> Supprimer cet administrateur
                             </a>
                         </c:if>
-                        <div class="d-flex gap-2 ${admin.superAdmin ? 'w-100 justify-content-end' : ''}">
+                        <div class="d-flex gap-2 ${admin.id == sessionScope.user.id ? 'w-100 justify-content-end' : ''}">
                             <a href="${pageContext.request.contextPath}/admin?action=list" 
                                class="btn btn-outline-custom">
                                 <i class="fas fa-times me-2"></i> Annuler

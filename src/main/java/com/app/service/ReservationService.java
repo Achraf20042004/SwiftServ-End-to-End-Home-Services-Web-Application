@@ -16,7 +16,7 @@ public class ReservationService {
 
     private GenericDAO<Reservation> dao = new GenericDAO<>(Reservation.class);
 
-    // CRUD de base
+   
     public void ajouter(Reservation reservation) throws ServiceException {
         try {
             dao.save(reservation);
@@ -78,22 +78,20 @@ public class ReservationService {
         } finally { if (em != null) em.close(); }
     }
 
-    // ------------------ CLIENT ------------------
+
 
     public List<Reservation> listerParClient(int clientId) throws ServiceException {
         EntityManager em = null;
         try {
             em = JpaUtil.getEntityManager();
-            TypedQuery<Reservation> q = em.createQuery(
-                "SELECT r FROM Reservation r WHERE r.client.id = :cid ORDER BY r.dateReservation DESC",
-                Reservation.class);
-            q.setParameter("cid", clientId);
-            return q.getResultList();
+            return em.createQuery(
+                "SELECT r FROM Reservation r WHERE r.client.id = :cid ORDER BY r.dateReservation DESC", 
+                Reservation.class)
+                     .setParameter("cid", clientId)
+                     .getResultList();
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors du listing des réservations du client", e);
-        } finally {
-            if (em != null) em.close();
-        }
+            throw new ServiceException("Erreur lors de la récupération des réservations du client", e);
+        } finally { if (em != null) em.close(); }
     }
 
     public long countByClient(int clientId) throws ServiceException {
@@ -144,22 +142,18 @@ public class ReservationService {
         } finally { if (em != null) em.close(); }
     }
 
-    // ------------------ PRESTATAIRE ------------------
+ 
 
     public List<Reservation> listerParPrestataire(int prestataireId) throws ServiceException {
         EntityManager em = null;
         try {
             em = JpaUtil.getEntityManager();
-            TypedQuery<Reservation> q = em.createQuery(
-                "SELECT r FROM Reservation r WHERE r.prestataire.id = :pid ORDER BY r.dateReservation DESC",
-                Reservation.class);
-            q.setParameter("pid", prestataireId);
-            return q.getResultList();
+            return em.createQuery("SELECT r FROM Reservation r WHERE r.prestataire.id = :pid", Reservation.class)
+                     .setParameter("pid", prestataireId)
+                     .getResultList();
         } catch (Exception e) {
-            throw new ServiceException("Erreur lors du listing des réservations du prestataire", e);
-        } finally {
-            if (em != null) em.close();
-        }
+            throw new ServiceException("Erreur lors de la récupération des réservations du prestataire", e);
+        } finally { if (em != null) em.close(); }
     }
 
     public long countByPrestataire(int prestataireId) throws ServiceException {
@@ -238,7 +232,7 @@ public class ReservationService {
         } finally { if (em != null) em.close(); }
     }
 
-    // ------------------ ADMIN ------------------
+
 
     public double getAdminRevenueCurrentMonth() throws ServiceException {
         EntityManager em = null;
@@ -259,9 +253,32 @@ public class ReservationService {
             q.setParameter("end", end);
             Double total = q.getSingleResult();
 
-            return total * 0.015;
+            // Vérifier que total n'est pas null avant de calculer
+            double montantTotal = (total != null) ? total : 0.0;
+            double commission = montantTotal * 0.015; // Commission admin 1,5%
+            
+            // Arrondir à 2 décimales
+            return Math.round(commission * 100.0) / 100.0;
+            
         } catch (Exception e) {
             throw new ServiceException("Erreur revenu admin", e);
+        } finally { 
+            if (em != null) em.close(); 
+        }
+    }
+    public List<Reservation> listerParPrestataireDisponibles(int prestataireId) throws ServiceException {
+        EntityManager em = null;
+        try {
+            em = JpaUtil.getEntityManager();
+            return em.createQuery(
+                "SELECT r FROM Reservation r WHERE r.prestataire.id = :pid " +
+                "AND r.id NOT IN (SELECT i.reservation.id FROM Intervention i)", 
+                Reservation.class)
+                     .setParameter("pid", prestataireId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la récupération des réservations disponibles", e);
         } finally { if (em != null) em.close(); }
     }
+    
 }

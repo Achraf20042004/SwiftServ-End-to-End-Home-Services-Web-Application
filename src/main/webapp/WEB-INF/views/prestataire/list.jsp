@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Prestataires" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -110,7 +111,7 @@
                                                 <i class="fas fa-user-tie"></i>
                                             </div>
                                             <div>
-                                                <strong>${prestataire.nom} ${prestataire.prenom}</strong>
+                                                <strong>${fn:escapeXml(prestataire.nom)} ${fn:escapeXml(prestataire.prenom)}</strong>
                                                 <br>
                                                 <small class="text-muted">
                                                     <i class="fas fa-calendar me-1"></i>
@@ -122,11 +123,11 @@
                                     <td>
                                         <div>
                                             <i class="fas fa-envelope text-muted me-1"></i>
-                                            <small>${prestataire.email}</small>
+                                            <small>${fn:escapeXml(prestataire.email)}</small>
                                         </div>
                                         <div>
                                             <i class="fas fa-phone text-muted me-1"></i>
-                                            <small>${prestataire.telephone}</small>
+                                            <small>${fn:escapeXml(prestataire.telephone)}</small>
                                         </div>
                                     </td>
                                     <td>

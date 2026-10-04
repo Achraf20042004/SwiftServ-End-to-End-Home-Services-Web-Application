@@ -19,26 +19,24 @@
         <class>com.app.model.Avis</class>
         <class>com.app.model.Reclamation</class>
         <class>com.app.model.Notification</class>
-        <class>com.app.model.Statistique</class>
 
         <properties>
-            <!-- Configuration de la connexion MySQL -->
+            <!-- Connexion MySQL (valeurs par défaut, surchargées par DB_URL / DB_USER / DB_PASSWORD, voir JpaUtil) -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/services_domicile?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
 
             <!-- Configuration Hibernate -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             
             <!-- Gestion automatique du schéma -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             
-            <!-- Affichage et formatage des requêtes SQL -->
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <!-- Affichage des requêtes SQL (activer seulement pour déboguer) -->
+            <property name="hibernate.show_sql" value="false"/>
             
-            <!-- Performance -->
+            <!-- Les JSP lisent des relations LAZY après la fermeture de l'EntityManager -->
             <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
         </properties>
     </persistence-unit>

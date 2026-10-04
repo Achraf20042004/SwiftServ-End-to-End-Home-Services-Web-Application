@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Catégories" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -54,12 +55,12 @@
                                         <span class="badge badge-primary-custom">#${categorie.id}</span>
                                     </td>
                                     <td>
-                                        <strong>${categorie.nom}</strong>
+                                        <strong>${fn:escapeXml(categorie.nom)}</strong>
                                     </td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty categorie.description}">
-                                                ${categorie.description}
+                                                ${fn:escapeXml(categorie.description)}
                                             </c:when>
                                             <c:otherwise>
                                                 <span class="text-muted fst-italic">Aucune description</span>

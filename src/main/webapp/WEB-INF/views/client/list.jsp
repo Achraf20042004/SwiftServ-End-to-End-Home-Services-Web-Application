@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <c:set var="pageTitle" value="Gestion des Clients" scope="request"/>
 <jsp:include page="../shared/header.jsp"/>
@@ -41,7 +42,7 @@
                             <i class="fas fa-city me-1"></i> Ville
                         </label>
                         <input type="text" class="form-control-modern" name="ville" 
-                               placeholder="Toutes les villes" value="${param.ville}">
+                               placeholder="Toutes les villes" value="${fn:escapeXml(param.ville)}">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label-modern">
@@ -103,17 +104,17 @@
                                                 <i class="fas fa-user"></i>
                                             </div>
                                             <div>
-                                                <strong>${client.nom} ${client.prenom}</strong>
+                                                <strong>${fn:escapeXml(client.nom)} ${fn:escapeXml(client.prenom)}</strong>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <i class="fas fa-envelope text-muted me-1"></i>
-                                        ${client.email}
+                                        ${fn:escapeXml(client.email)}
                                     </td>
                                     <td>
                                         <i class="fas fa-phone text-muted me-1"></i>
-                                        ${client.telephone}
+                                        ${fn:escapeXml(client.telephone)}
                                     </td>
                                     <td>
                                         <i class="fas fa-map-marker-alt text-muted me-1"></i>
